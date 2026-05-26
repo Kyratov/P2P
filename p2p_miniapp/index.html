@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title></title>
+    <title>P2P Tracker Pro — Telegram Mini App</title>
     <style>
         * {
             margin: 0;
@@ -114,6 +114,27 @@
             display: flex;
             justify-content: space-between;
             gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Разделение групп статистики */
+        .stat-group {
+            margin-bottom: 20px;
+        }
+        
+        .stat-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-group-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 16px 0;
+            transition: background 0.3s;
+        }
+        
+        body.dark .stat-group-divider {
+            background: #334155;
         }
 
         .stat-item {
@@ -123,16 +144,17 @@
             padding: 14px 10px;
             text-align: center;
             transition: background 0.3s;
+            min-width: 100px;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #64748b;
             transition: color 0.3s;
         }
 
         .stat-value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             margin-top: 6px;
             transition: color 0.3s;
@@ -140,6 +162,7 @@
 
         .stat-value.buy { color: #10b981; }
         .stat-value.sell { color: #ef4444; }
+        .stat-value.profit { color: #f59e0b; }
 
         .analytics-grid {
             display: grid;
@@ -162,6 +185,23 @@
         
         .analytic-card .stat-value {
             font-size: 16px;
+            font-weight: 700;
+        }
+
+        .rate-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+        }
+        .rate-card .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .rate-card .value {
+            font-size: 28px;
             font-weight: 700;
         }
 
@@ -320,25 +360,32 @@
             color: #3b82f6;
         }
         
-        .price-row {
+        .profit-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 6px;
+            margin-top: 6px;
             border-top: 1px solid #e2e8f0;
-            transition: border-color 0.3s;
         }
         
-        .price-label {
+        .profit-label {
             font-size: 11px;
             color: #64748b;
-            transition: color 0.3s;
         }
         
-        .price-value {
+        .profit-value {
             font-size: 13px;
             font-weight: 600;
-            transition: color 0.3s;
+            color: #f59e0b;
+        }
+        
+        .profit-value.positive {
+            color: #10b981;
+        }
+        
+        .profit-value.negative {
+            color: #ef4444;
         }
         
         .counterparty-row {
@@ -395,7 +442,6 @@
             background: rgba(239,68,68,0.1);
         }
         
-        /* Новая строка поиска с тремя точками */
         .search-wrapper-new {
             display: flex;
             gap: 10px;
@@ -418,7 +464,6 @@
             transition: background 0.3s, border-color 0.3s, color 0.3s;
         }
 
-        /* Три точки — одного стиля с поиском */
         .menu-dots {
             position: relative;
             background: white;
@@ -434,10 +479,6 @@
             cursor: pointer;
             color: #475569;
             transition: all 0.2s;
-        }
-
-        .menu-dots:hover {
-            background: #f1f5f9;
         }
 
         .dropdown-menu {
@@ -475,7 +516,6 @@
             color: white;
         }
 
-        /* Результат калькулятора — ЗЕЛЁНЫЙ */
         .calc-result {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
@@ -487,7 +527,6 @@
             font-size: 14px;
         }
 
-        /* Экспорт данных */
         .export-section {
             background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             border-radius: 28px;
@@ -505,12 +544,13 @@
         .export-section p {
             font-size: 12px;
             opacity: 0.9;
+            margin-bottom: 12px;
         }
         
         .export-buttons {
             display: flex;
             gap: 12px;
-            margin-top: 14px;
+            margin-top: 8px;
         }
         
         .export-buttons button {
@@ -525,7 +565,6 @@
             cursor: pointer;
         }
 
-        /* Техподдержка — СИНИЙ ГРАДИЕНТ, заголовок по центру */
         .support-chat {
             background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             border-radius: 28px;
@@ -539,10 +578,12 @@
             color: white;
             text-align: center;
             justify-content: center;
+            margin-bottom: 12px;
         }
 
         .support-chat p {
             color: rgba(255,255,255,0.9);
+            margin-bottom: 16px;
         }
 
         .support-chat .btn {
@@ -609,7 +650,6 @@
             transition: background 0.3s;
         }
 
-        /* ========== СТИЛИ ДЛЯ SELECT (СТРЕЛКА ЧЕРЕЗ ПСЕВДОЭЛЕМЕНТ) ========== */
         .select-wrapper {
             position: relative;
         }
@@ -701,12 +741,8 @@
             color: #f1f5f9;
         }
         
-        body.dark .price-label {
+        body.dark .profit-label {
             color: #94a3b8;
-        }
-        
-        body.dark .price-value {
-            color: #cbd5e1;
         }
         
         body.dark .price-row {
@@ -755,15 +791,10 @@
             color: #fbbf24;
         }
         
-        /* Тёмная тема для трёх точек */
         body.dark .menu-dots {
             background: #0f172a;
             border-color: #334155;
             color: #e2e8f0;
-        }
-
-        body.dark .menu-dots:hover {
-            background: #1e293b;
         }
 
         body.dark .dropdown-menu {
@@ -831,20 +862,52 @@
     <div id="homeTab" class="tab-content active">
         <div class="card">
             <h2>📊 P2P статистика</h2>
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <div class="stat-label">💰 Куплено USDT</div>
-                    <div class="stat-value buy" id="totalBuy">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">💸 Продано USDT</div>
-                    <div class="stat-value sell" id="totalSell">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">📈 Прибыль USDT</div>
-                    <div class="stat-value" id="netBalance">0</div>
+            
+            <!-- Первая группа: Куплено/Продано/Прибыль USDT -->
+            <div class="stat-group">
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">💰 Куплено USDT</div>
+                        <div class="stat-value buy" id="totalBuy">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">💸 Продано USDT</div>
+                        <div class="stat-value sell" id="totalSell">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">📈 Прибыль USDT</div>
+                        <div class="stat-value" id="netBalance">0</div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Разделитель -->
+            <div class="stat-group-divider"></div>
+            
+            <!-- Вторая группа: Сумма покупок/продаж/общая прибыль -->
+            <div class="stat-group">
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">💰 Сумма покупок (RUB)</div>
+                        <div class="stat-value" id="totalBuyRub">0 ₽</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">💸 Сумма продаж (RUB)</div>
+                        <div class="stat-value" id="totalSellRub">0 ₽</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">🏆 Общая прибыль (RUB)</div>
+                        <div class="stat-value profit" id="totalProfitRub">0 ₽</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Курс валют -->
+        <div class="rate-card" id="rateCard">
+            <div class="label">💱 Курс USD/RUB (ЦБ РФ)</div>
+            <div class="value" id="usdRate">—</div>
+            <div class="label" style="font-size: 10px; margin-top: 8px;">Обновляется автоматически</div>
         </div>
 
         <div class="card">
@@ -859,8 +922,8 @@
                     <div class="stat-value" id="avgSellPrice">0 ₽</div>
                 </div>
                 <div class="analytic-card">
-                    <div class="stat-label">💰 Прибыль</div>
-                    <div class="stat-value" id="profitLoss">0 ₽</div>
+                    <div class="stat-label">💰 Прибыль P2P (разница)</div>
+                    <div class="stat-value profit" id="profitP2P">0 ₽</div>
                 </div>
                 <div class="analytic-card">
                     <div class="stat-label">🔄 Всего сделок</div>
@@ -889,7 +952,6 @@
                 </div>
             </div>
             
-            <!-- Строка поиска с тремя точками -->
             <div class="search-wrapper-new">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="🔍 Поиск по контрагенту или комментарию">
@@ -908,7 +970,7 @@
         </div>
     </div>
 
-    <!-- Создать сделку -->
+    <!-- Создать сделку (убрана точка) -->
     <div id="createTab" class="tab-content">
         <div class="card">
             <h2>➕ Новая сделка</h2>
@@ -940,7 +1002,7 @@
                 </div>
                 <div class="input-group">
                     <label>Комментарий</label>
-                    <textarea id="comment" rows="2" placeholder="Дополнительная информация..."></textarea>
+                    <textarea id="comment" rows="2" placeholder="Дополнительная информация"></textarea>
                 </div>
                 <button type="submit" class="btn">✨ Записать сделку</button>
             </form>
@@ -991,9 +1053,9 @@
         <div class="support-chat">
             <div style="font-size: 40px;">🛟</div>
             <h2>Техподдержка</h2>
-            <p style="margin: 8px 0; font-size: 13px;">Напишите нам, если нашли баг или есть идеи по улучшению приложения!</p>
+            <p>Напишите нам, если нашли баг или есть идеи по улучшению приложения!</p>
             <button id="supportBtn" class="btn">📩 Открыть чат</button>
-            <p style="margin-top: 12px; font-size: 11px; opacity: 0.7;">tg: @KyratovVD</p>
+            <p style="margin-top: 16px; font-size: 11px; opacity: 0.7;">tg: @KyratovVD</p>
         </div>
     </div>
 </div>
@@ -1021,16 +1083,30 @@
     let deals = [];
     let currentFilter = 'all';
     let searchQuery = '';
+    let currentUsdRate = 0;
+
+    async function fetchUsdRate() {
+        try {
+            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            const data = await response.json();
+            currentUsdRate = data.rates.RUB;
+            document.getElementById('usdRate').innerText = currentUsdRate.toFixed(2) + ' ₽';
+        } catch (error) {
+            console.error('Ошибка загрузки курса:', error);
+            document.getElementById('usdRate').innerText = '—';
+            currentUsdRate = 0;
+        }
+    }
 
     function loadData() {
-        const stored = localStorage.getItem('p2p_deals_v6');
+        const stored = localStorage.getItem('p2p_deals_v7');
         if(stored) deals = JSON.parse(stored);
         else deals = [];
         renderAll();
         updateDealsStats();
     }
 
-    function saveData() { localStorage.setItem('p2p_deals_v6', JSON.stringify(deals)); }
+    function saveData() { localStorage.setItem('p2p_deals_v7', JSON.stringify(deals)); }
 
     function addDeal(deal) {
         deal.id = Date.now();
@@ -1074,6 +1150,37 @@
         });
     }
 
+    function calcAnalytics() {
+        const buys = deals.filter(d => d.type === 'buy');
+        const sells = deals.filter(d => d.type === 'sell');
+        
+        const avgBuy = buys.length ? buys.reduce((s,d) => s + (d.pricePerUsdt || d.amountPaid/d.usdtAmount),0)/buys.length : 0;
+        const avgSell = sells.length ? sells.reduce((s,d) => s + (d.pricePerUsdt || d.amountPaid/d.usdtAmount),0)/sells.length : 0;
+        
+        const totalBuyUsdt = buys.reduce((s,d) => s + d.usdtAmount,0);
+        const totalSellUsdt = sells.reduce((s,d) => s + d.usdtAmount,0);
+        const totalBuyRub = buys.reduce((s,d) => s + d.amountPaid,0);
+        const totalSellRub = sells.reduce((s,d) => s + d.amountPaid,0);
+        
+        const profitP2P = totalSellRub - totalBuyRub;
+        
+        document.getElementById('avgBuyPrice').innerHTML = avgBuy.toFixed(2) + ' ₽';
+        document.getElementById('avgSellPrice').innerHTML = avgSell.toFixed(2) + ' ₽';
+        document.getElementById('profitP2P').innerHTML = profitP2P.toFixed(2) + ' ₽';
+        document.getElementById('totalDeals').innerText = deals.length;
+        
+        document.getElementById('totalBuy').innerText = totalBuyUsdt.toFixed(2);
+        document.getElementById('totalSell').innerText = totalSellUsdt.toFixed(2);
+        document.getElementById('netBalance').innerText = (totalBuyUsdt - totalSellUsdt).toFixed(2);
+        
+        document.getElementById('totalBuyRub').innerHTML = totalBuyRub.toFixed(2) + ' ₽';
+        document.getElementById('totalSellRub').innerHTML = totalSellRub.toFixed(2) + ' ₽';
+        
+        const profitColor = profitP2P >= 0 ? '#10b981' : '#ef4444';
+        document.getElementById('totalProfitRub').style.color = profitColor;
+        document.getElementById('totalProfitRub').innerHTML = profitP2P.toFixed(2) + ' ₽';
+    }
+
     function formatDate(timestamp) {
         const date = new Date(timestamp);
         return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
@@ -1094,6 +1201,17 @@
         container.innerHTML = filtered.map(deal => {
             const price = (deal.pricePerUsdt || deal.amountPaid/deal.usdtAmount).toFixed(2);
             const isBuy = deal.type === 'buy';
+            let dealProfit = '';
+            if (!isBuy && currentUsdRate > 0) {
+                const profitByBank = deal.amountPaid - (deal.usdtAmount * currentUsdRate);
+                const profitClass = profitByBank >= 0 ? 'positive' : 'negative';
+                dealProfit = `
+                    <div class="profit-row">
+                        <span class="profit-label">📊 Прибыль по курсу ЦБ</span>
+                        <span class="profit-value ${profitClass}">${profitByBank.toFixed(2)} ₽</span>
+                    </div>
+                `;
+            }
             return `
                 <div class="transaction-card">
                     <div class="transaction-header">
@@ -1113,10 +1231,11 @@
                             <span class="rub-amount">${deal.amountPaid.toLocaleString()} ₽</span>
                             <span class="usdt-amount">${deal.usdtAmount.toFixed(2)} USDT</span>
                         </div>
-                        <div class="price-row">
-                            <span class="price-label">💰 Курс сделки</span>
+                        <div class="price-row" style="display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px solid #e2e8f0;">
+                            <span class="price-label">💰 Ваша цена</span>
                             <span class="price-value">${price} ₽ за 1 USDT</span>
                         </div>
+                        ${dealProfit}
                         ${deal.counterparty ? `
                             <div class="counterparty-row">
                                 <span>👤</span>
@@ -1151,23 +1270,6 @@
                 openEditModal(id);
             });
         });
-    }
-
-    function calcAnalytics() {
-        const buys = deals.filter(d => d.type === 'buy');
-        const sells = deals.filter(d => d.type === 'sell');
-        const avgBuy = buys.length ? buys.reduce((s,d) => s + (d.pricePerUsdt || d.amountPaid/d.usdtAmount),0)/buys.length : 0;
-        const avgSell = sells.length ? sells.reduce((s,d) => s + (d.pricePerUsdt || d.amountPaid/d.usdtAmount),0)/sells.length : 0;
-        const totalBuyUsdt = buys.reduce((s,d) => s + d.usdtAmount,0);
-        const totalSellUsdt = sells.reduce((s,d) => s + d.usdtAmount,0);
-        const profit = (avgSell * totalSellUsdt) - (avgBuy * totalBuyUsdt);
-        document.getElementById('avgBuyPrice').innerHTML = avgBuy.toFixed(2) + ' ₽';
-        document.getElementById('avgSellPrice').innerHTML = avgSell.toFixed(2) + ' ₽';
-        document.getElementById('profitLoss').innerHTML = profit.toFixed(2) + ' ₽';
-        document.getElementById('totalDeals').innerText = deals.length;
-        document.getElementById('totalBuy').innerText = totalBuyUsdt.toFixed(2);
-        document.getElementById('totalSell').innerText = totalSellUsdt.toFixed(2);
-        document.getElementById('netBalance').innerText = (totalBuyUsdt - totalSellUsdt).toFixed(2);
     }
 
     function renderAll() { calcAnalytics(); renderDealsList(); }
@@ -1265,7 +1367,6 @@
         btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
     });
 
-    // Меню с тремя точками для фильтрации
     const menuDotsBtn = document.getElementById('menuDotsBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
 
@@ -1276,24 +1377,19 @@
         });
     }
 
-    // Закрыть меню при клике вне
     document.addEventListener('click', () => {
         if (dropdownMenu) dropdownMenu.classList.remove('show');
     });
 
-    // Обработка выбора из меню
     document.querySelectorAll('.dropdown-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.stopPropagation();
             const filterValue = item.dataset.filterQuick;
-            
             document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
-            
             if (filterValue === 'all') currentFilter = 'all';
             else if (filterValue === 'buy') currentFilter = 'buy';
             else if (filterValue === 'sell') currentFilter = 'sell';
-            
             renderDealsList();
             if (dropdownMenu) dropdownMenu.classList.remove('show');
         });
@@ -1322,7 +1418,9 @@
 
     if(window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
 
+    fetchUsdRate();
     loadData();
+    setInterval(fetchUsdRate, 60000);
 </script>
 </body>
 </html>
