@@ -117,7 +117,6 @@
             flex-wrap: wrap;
         }
 
-        /* Разделение групп статистики */
         .stat-group {
             margin-bottom: 20px;
         }
@@ -188,21 +187,68 @@
             font-weight: 700;
         }
 
-        .rate-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 16px;
+        /* Блок общей прибыли */
+        .profit-block {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 28px;
+            padding: 20px;
             margin-bottom: 20px;
             text-align: center;
             color: white;
         }
-        .rate-card .label {
-            font-size: 12px;
+        
+        .profit-block .label {
+            font-size: 13px;
             opacity: 0.9;
+            margin-bottom: 8px;
         }
-        .rate-card .value {
-            font-size: 28px;
+        
+        .profit-block .value {
+            font-size: 32px;
             font-weight: 700;
+        }
+
+        /* Курсы валют — сетка 3 в ряд */
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .rate-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 14px 8px;
+            text-align: center;
+            color: white;
+            transition: transform 0.2s;
+        }
+        
+        .rate-card:nth-child(2) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .rate-card:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .rate-card .currency {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 6px;
+        }
+        
+        .rate-card .value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .rate-card .change {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-top: 4px;
         }
 
         .input-group {
@@ -853,6 +899,14 @@
         body.dark .calc-result {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
+        
+        body.dark .profit-block {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+        }
+        
+        body.dark .rate-card {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
     </style>
 </head>
 <body>
@@ -860,10 +914,36 @@
 <div class="container">
     <!-- Главная вкладка -->
     <div id="homeTab" class="tab-content active">
+        
+        <!-- ОБЩАЯ ПРИБЫЛЬ (RUB) — отдельный блок наверху -->
+        <div class="profit-block">
+            <div class="label">🏆 Общая прибыль (RUB)</div>
+            <div class="value" id="totalProfitRub">0 ₽</div>
+        </div>
+        
+        <!-- Курсы валют — сетка 3 в ряд -->
+        <div class="rates-grid">
+            <div class="rate-card">
+                <div class="currency">💵 USD</div>
+                <div class="value" id="usdRate">—</div>
+                <div class="change" id="usdChange">—</div>
+            </div>
+            <div class="rate-card">
+                <div class="currency">💶 EUR</div>
+                <div class="value" id="eurRate">—</div>
+                <div class="change" id="eurChange">—</div>
+            </div>
+            <div class="rate-card">
+                <div class="currency">¥ CNY</div>
+                <div class="value" id="cnyRate">—</div>
+                <div class="change" id="cnyChange">—</div>
+            </div>
+        </div>
+
+        <!-- P2P статистика (куплено/продано USDT) -->
         <div class="card">
             <h2>📊 P2P статистика</h2>
             
-            <!-- Первая группа: Куплено/Продано/Прибыль USDT -->
             <div class="stat-group">
                 <div class="stat-grid">
                     <div class="stat-item">
@@ -881,10 +961,8 @@
                 </div>
             </div>
             
-            <!-- Разделитель -->
             <div class="stat-group-divider"></div>
             
-            <!-- Вторая группа: Сумма покупок/продаж/общая прибыль -->
             <div class="stat-group">
                 <div class="stat-grid">
                     <div class="stat-item">
@@ -895,23 +973,14 @@
                         <div class="stat-label">💸 Сумма продаж (RUB)</div>
                         <div class="stat-value" id="totalSellRub">0 ₽</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-label">🏆 Общая прибыль (RUB)</div>
-                        <div class="stat-value profit" id="totalProfitRub">0 ₽</div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Курс валют -->
-        <div class="rate-card" id="rateCard">
-            <div class="label">💱 Курс USD/RUB (ЦБ РФ)</div>
-            <div class="value" id="usdRate">—</div>
-            <div class="label" style="font-size: 10px; margin-top: 8px;">Обновляется автоматически</div>
-        </div>
-
+        <!-- P2P аналитика -->
         <div class="card">
             <h2>📐 P2P аналитика</h2>
+            
             <div class="analytics-grid">
                 <div class="analytic-card">
                     <div class="stat-label">📈 Средняя цена покупки</div>
@@ -921,17 +990,15 @@
                     <div class="stat-label">📉 Средняя цена продажи</div>
                     <div class="stat-value" id="avgSellPrice">0 ₽</div>
                 </div>
-                <div class="analytic-card">
-                    <div class="stat-label">💰 Прибыль P2P (разница)</div>
-                    <div class="stat-value profit" id="profitP2P">0 ₽</div>
-                </div>
-                <div class="analytic-card">
-                    <div class="stat-label">🔄 Всего сделок</div>
-                    <div class="stat-value" id="totalDeals">0</div>
-                </div>
+            </div>
+            
+            <div class="stat-item" style="width: 100%; margin-top: 12px;">
+                <div class="stat-label">🔄 Всего сделок</div>
+                <div class="stat-value" id="totalDeals">0</div>
             </div>
         </div>
 
+        <!-- История операций -->
         <div class="card">
             <div class="deals-header">
                 <h2>📋 История операций</h2>
@@ -970,7 +1037,7 @@
         </div>
     </div>
 
-    <!-- Создать сделку (убрана точка) -->
+    <!-- Создать сделку -->
     <div id="createTab" class="tab-content">
         <div class="card">
             <h2>➕ Новая сделка</h2>
@@ -1084,17 +1151,22 @@
     let currentFilter = 'all';
     let searchQuery = '';
     let currentUsdRate = 0;
+    let currentEurRate = 0;
+    let currentCnyRate = 0;
 
-    async function fetchUsdRate() {
+    async function fetchExchangeRates() {
         try {
             const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
             const data = await response.json();
             currentUsdRate = data.rates.RUB;
-            document.getElementById('usdRate').innerText = currentUsdRate.toFixed(2) + ' ₽';
+            currentEurRate = data.rates.EUR;
+            currentCnyRate = data.rates.CNY;
+            
+            document.getElementById('usdRate').innerHTML = currentUsdRate.toFixed(2) + ' ₽';
+            document.getElementById('eurRate').innerHTML = (currentUsdRate / currentEurRate).toFixed(2) + ' ₽';
+            document.getElementById('cnyRate').innerHTML = (currentUsdRate / currentCnyRate).toFixed(2) + ' ₽';
         } catch (error) {
-            console.error('Ошибка загрузки курса:', error);
-            document.getElementById('usdRate').innerText = '—';
-            currentUsdRate = 0;
+            console.error('Ошибка загрузки курсов:', error);
         }
     }
 
@@ -1166,7 +1238,6 @@
         
         document.getElementById('avgBuyPrice').innerHTML = avgBuy.toFixed(2) + ' ₽';
         document.getElementById('avgSellPrice').innerHTML = avgSell.toFixed(2) + ' ₽';
-        document.getElementById('profitP2P').innerHTML = profitP2P.toFixed(2) + ' ₽';
         document.getElementById('totalDeals').innerText = deals.length;
         
         document.getElementById('totalBuy').innerText = totalBuyUsdt.toFixed(2);
@@ -1418,9 +1489,9 @@
 
     if(window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
 
-    fetchUsdRate();
+    fetchExchangeRates();
     loadData();
-    setInterval(fetchUsdRate, 60000);
+    setInterval(fetchExchangeRates, 60000);
 </script>
 </body>
 </html>
