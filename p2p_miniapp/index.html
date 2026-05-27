@@ -1053,7 +1053,7 @@
                 </div>
                 <div class="input-group">
                     <label>Дата сделки (ДД.ММ.ГГ)</label>
-                    <input type="text" id="dealDate" placeholder="например: 25.05.26" maxlength="8" required>
+                    <input type="text" id="dealDate" placeholder="Например: 25.05.26" maxlength="10" required>
                 </div>
                 <div class="input-group">
                     <label>Сумма оплаты (RUB)</label>
@@ -1199,15 +1199,47 @@
         }
     }
 
-    function loadData() {
-        const stored = localStorage.getItem('p2p_deals_v8');
-        if(stored) deals = JSON.parse(stored);
-        else deals = [];
-        renderAll();
-        updateDealsStats();
+    // === РАЗДЕЛЕНИЕ ДАННЫХ ПО ПОЛЬЗОВАТЕЛЯМ ===
+    let currentUserId = null;
+
+    // Получаем ID пользователя Telegram
+    function getCurrentUserId() {
+    if (currentUserId) return currentUserId;
+    
+    if (window.Telegram && Telegram.WebApp) {
+        const user = Telegram.WebApp.initDataUnsafe?.user;
+        if (user && user.id) {
+            currentUserId = user.id.toString();
+            return currentUserId;
+        }
+    }
+    
+    // Гостевой ID (для тестирования вне Telegram)
+    let guestId = localStorage.getItem('p2p_guest_id');
+    if (!guestId) {
+        guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        localStorage.setItem('p2p_guest_id', guestId);
+    }
+    currentUserId = guestId;
+    return currentUserId;
+}
+
+    // Функция получения ключа для localStorage
+    function getStorageKey() {
+    return `p2p_deals_${getCurrentUserId()}`;
     }
 
-    function saveData() { localStorage.setItem('p2p_deals_v8', JSON.stringify(deals)); }
+    function loadData() {
+    const stored = localStorage.getItem(getStorageKey());
+    if(stored) deals = JSON.parse(stored);
+    else deals = [];
+    renderAll();
+    updateDealsStats();
+}
+
+    function saveData() { 
+    localStorage.setItem(getStorageKey(), JSON.stringify(deals)); 
+}
 
     function addDeal(deal) {
         deal.id = Date.now();
@@ -1502,7 +1534,7 @@
         
         // Проверка формата даты
         if (!isValidDate(dealDate)) {
-            alert('Неверный формат даты! Используйте ДД.ММ.ГГ (например: 25.05.26)');
+            alert('Неверный формат даты! Используйте ДД.ММ.ГГ (Например: 25.05.26)');
             return;
         }
         
