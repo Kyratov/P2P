@@ -361,12 +361,14 @@
             font-weight: 600;
             font-size: 14px;
             transition: color 0.3s;
+            text-align: center;
         }
         
         .transaction-date {
             font-size: 10px;
             color: #94a3b8;
             transition: color 0.3s;
+            text-align: center;
         }
         
         .transaction-body {
@@ -378,6 +380,7 @@
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 10px;
+            text-align: center;
         }
         
         .rub-amount {
@@ -631,7 +634,6 @@
             margin-top: 4px;
         }
 
-        /* Корректировка баланса */
         .balance-adjust-section {
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
             border-radius: 28px;
@@ -727,7 +729,7 @@
             border-radius: 32px;
             padding: 24px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             transition: background 0.3s;
         }
         
@@ -1180,7 +1182,6 @@
                 <button id="clearAllBtn" class="btn clear-btn">🗑️ Очистить все данные</button>
             </div>
 
-            <!-- Корректировка баланса -->
             <div class="balance-adjust-section">
                 <div style="font-size: 32px;">⚖️</div>
                 <h3>Корректировка баланса</h3>
@@ -1379,7 +1380,7 @@
         return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
     }
 
-    function renderDealCard(deal, isHistory = false) {
+    function renderDealCard(deal) {
         const price = (deal.pricePerUsdt || deal.amountPaid/deal.usdtAmount).toFixed(2);
         const isBuy = deal.type === 'buy';
         let dealProfit = '';
@@ -1460,7 +1461,7 @@
             container.innerHTML = '<div class="empty-state">📭 Сделок не найдено</div>';
             return;
         }
-        container.innerHTML = filtered.map(deal => renderDealCard(deal, true)).join('');
+        container.innerHTML = filtered.map(deal => renderDealCard(deal)).join('');
         
         attachHistoryActionButtons();
     }
@@ -1513,12 +1514,22 @@
         const modalHtml = `
             <div class="modal" id="editModal">
                 <div class="modal-content">
-                    <h3>✏️ Редактировать</h3>
+                    <h3>✏️ Редактировать сделку</h3>
+                    <div class="input-group">
+                        <label>Тип операции</label>
+                        <div class="select-wrapper">
+                            <select id="editType">
+                                <option value="buy" ${deal.type === 'buy' ? 'selected' : ''}>Покупка USDT</option>
+                                <option value="sell" ${deal.type === 'sell' ? 'selected' : ''}>Продажа USDT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group"><label>Дата сделки (ДД.ММ.ГГ)</label><input type="text" id="editDate" value="${deal.customDate || ''}" placeholder="25.05.26"></div>
                     <div class="input-group"><label>Сумма RUB</label><input type="number" id="editAmount" value="${deal.amountPaid}" step="0.01"></div>
                     <div class="input-group"><label>USDT</label><input type="number" id="editUsdt" value="${deal.usdtAmount}" step="0.01"></div>
                     <div class="input-group"><label>Метод оплаты</label><input type="text" id="editCounterparty" value="${deal.counterparty || ''}"></div>
                     <div class="input-group"><label>Номер сделки</label><input type="text" id="editDealNumber" value="${deal.dealNumber || ''}"></div>
-                    <div class="input-group"><label>Ссылка на чек</label><textarea id="editComment">${deal.comment || ''}</textarea></div>
+                    <div class="input-group"><label>Ссылка на чек</label><textarea id="editComment" rows="2">${deal.comment || ''}</textarea></div>
                     <button id="saveEditBtn" class="btn">💾 Сохранить</button>
                     <button id="closeModalBtn" class="btn" style="background:#94a3b8; margin-top:8px;">Отмена</button>
                 </div>
@@ -1526,10 +1537,27 @@
         `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         document.getElementById('saveEditBtn').onclick = () => {
+            const newType = document.getElementById('editType').value;
+            const newDate = document.getElementById('editDate').value;
             const newAmount = parseFloat(document.getElementById('editAmount').value);
             const newUsdt = parseFloat(document.getElementById('editUsdt').value);
+            const newCounterparty = document.getElementById('editCounterparty').value;
+            const newDealNumber = document.getElementById('editDealNumber').value;
+            const newComment = document.getElementById('editComment').value;
+            
             if(isNaN(newAmount) || isNaN(newUsdt)) { alert('Введите числа'); return; }
-            updateDeal(id, { amountPaid: newAmount, usdtAmount: newUsdt, pricePerUsdt: newAmount/newUsdt, counterparty: document.getElementById('editCounterparty').value, dealNumber: document.getElementById('editDealNumber').value, comment: document.getElementById('editComment').value });
+            if(newDate && !isValidDate(newDate)) { alert('Неверный формат даты! Используйте ДД.ММ.ГГ'); return; }
+            
+            updateDeal(id, { 
+                type: newType,
+                amountPaid: newAmount, 
+                usdtAmount: newUsdt, 
+                pricePerUsdt: newAmount/newUsdt, 
+                counterparty: newCounterparty, 
+                dealNumber: newDealNumber, 
+                comment: newComment,
+                customDate: newDate
+            });
             document.getElementById('editModal').remove();
         };
         document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').remove();
@@ -1554,7 +1582,6 @@
             return;
         }
         
-        // Добавляем корректировочную сделку
         const adjustType = difference > 0 ? 'buy' : 'sell';
         const adjustAmount = Math.abs(difference);
         const now = new Date();
@@ -1567,7 +1594,7 @@
             pricePerUsdt: 0,
             counterparty: 'Корректировка баланса',
             dealNumber: 'Adjust',
-            comment: `Корректировка баланса: ${difference > 0 ? '+' : '-'}${adjustAmount} USDT`,
+            comment: `Корректировка баланса: ${difference > 0 ? '+' : '-'}${adjustAmount.toFixed(2)} USDT`,
             customDate: dateStr
         });
         
