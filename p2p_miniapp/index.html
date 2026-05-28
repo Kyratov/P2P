@@ -138,12 +138,12 @@
         }
 
         .card {
-            background: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border-radius: 28px;
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #e8ecf0;
+            border: 1px solid #d1d5db;
             transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
         }
 
@@ -186,12 +186,13 @@
 
         .stat-item {
             flex: 1;
-            background: #f8fafc;
+            background: rgba(255,255,255,0.6);
             border-radius: 20px;
             padding: 14px 10px;
             text-align: center;
             transition: background 0.3s;
             min-width: 100px;
+            border: 1px solid #e5e7eb;
         }
 
         .stat-label {
@@ -209,15 +210,15 @@
 
         .stat-value.buy { color: #10b981; }
         .stat-value.sell { color: #ef4444; }
-        .stat-value.profit { color: #f59e0b; }
 
         .profit-block {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
             border-radius: 28px;
             padding: 20px;
             margin-bottom: 20px;
             text-align: center;
             color: white;
+            border: 1px solid #5b21b6;
         }
         
         .profit-block .label {
@@ -245,14 +246,7 @@
             text-align: center;
             color: white;
             transition: transform 0.2s;
-        }
-        
-        .rate-card:nth-child(2) {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        .rate-card:nth-child(3) {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 1px solid #5b21b6;
         }
         
         .rate-card .currency {
@@ -324,11 +318,13 @@
             color: #1e293b;
             margin-top: 12px;
             box-shadow: none;
+            border: 1px solid #d1d5db;
         }
         
         body.dark .btn-secondary {
             background: #334155;
             color: #f1f5f9;
+            border-color: #475569;
         }
 
         .deals-header {
@@ -343,11 +339,12 @@
         
         .deal-stat-chip {
             flex: 1;
-            background: #f8fafc;
+            background: rgba(255,255,255,0.6);
             border-radius: 16px;
             padding: 10px;
             text-align: center;
             transition: background 0.3s;
+            border: 1px solid #e5e7eb;
         }
         
         .deal-stat-chip .label {
@@ -368,7 +365,7 @@
             border-radius: 20px;
             margin-bottom: 12px;
             overflow: hidden;
-            border: 1px solid #e8ecf0;
+            border: 1px solid #d1d5db;
             transition: background 0.3s, border-color 0.3s;
         }
         
@@ -409,14 +406,12 @@
             font-weight: 600;
             font-size: 14px;
             transition: color 0.3s;
-            text-align: center;
         }
         
         .transaction-date {
             font-size: 10px;
             color: #94a3b8;
             transition: color 0.3s;
-            text-align: center;
         }
         
         .transaction-body {
@@ -500,7 +495,6 @@
             text-decoration: underline;
         }
         
-        /* Кнопки по центру */
         .transaction-footer {
             padding: 8px 14px 12px 14px;
             display: flex;
@@ -568,7 +562,7 @@
         
         .filter-pill {
             background: #f1f5f9;
-            border: none;
+            border: 1px solid #e2e8f0;
             padding: 6px 16px;
             border-radius: 40px;
             font-size: 12px;
@@ -581,6 +575,7 @@
         .filter-pill.active {
             background: #3b82f6;
             color: white;
+            border-color: #3b82f6;
         }
 
         .calc-result {
@@ -600,6 +595,7 @@
             padding: 20px;
             text-align: center;
             color: white;
+            border: 1px solid #2563eb;
         }
 
         .support-chat h3 {
@@ -650,6 +646,7 @@
             width: 100%;
             max-width: 450px;
             transition: background 0.3s;
+            border: 1px solid #d1d5db;
         }
         
         .modal-content h3 {
@@ -709,7 +706,7 @@
         }
         
         body.dark .card {
-            background: #1e293b;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border-color: #334155;
         }
         
@@ -718,7 +715,8 @@
         }
         
         body.dark .stat-item {
-            background: #334155;
+            background: rgba(51, 65, 85, 0.6);
+            border-color: #475569;
         }
         
         body.dark .stat-label {
@@ -730,7 +728,8 @@
         }
         
         body.dark .deal-stat-chip {
-            background: #334155;
+            background: rgba(51, 65, 85, 0.6);
+            border-color: #475569;
         }
         
         body.dark .deal-stat-chip .label {
@@ -819,6 +818,7 @@
         
         body.dark .filter-pill {
             background: #334155;
+            border-color: #475569;
             color: #e2e8f0;
         }
         
@@ -827,12 +827,28 @@
             color: white;
         }
         
+        body.dark .rate-card {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-color: #475569;
+        }
+        
+        body.dark .profit-block {
+            background: linear-gradient(135deg, #5b21b6 0%, #4c1d95 100%);
+            border-color: #3b0764;
+        }
+        
+        body.dark .support-chat {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border-color: #1e3a8a;
+        }
+        
         body.dark .empty-state {
             color: #64748b;
         }
         
         body.dark .modal-content {
             background: #1e293b;
+            border-color: #334155;
         }
         
         body.dark .modal-content h3 {
@@ -852,18 +868,6 @@
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
         }
         
-        body.dark .profit-block {
-            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
-        }
-        
-        body.dark .rate-card {
-            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-        }
-        
-        body.dark .support-chat {
-            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-        }
-        
         body.dark .usdt-amount {
             color: #60a5fa;
         }
@@ -871,10 +875,12 @@
         body.dark .btn-secondary {
             background: #334155;
             color: #f1f5f9;
+            border-color: #475569;
         }
     </style>
 </head>
 <body>
+
 <!-- ПРИВЕТСТВЕННОЕ МЕНЮ -->
 <div class="welcome-overlay" id="welcomeOverlay">
     <div class="welcome-card">
@@ -882,7 +888,7 @@
         <div class="welcome-title">P2P Tracker Pro</div>
         <div class="welcome-subtitle">Умный учёт P2P сделок прямо в Telegram</div>
         <div class="welcome-features">
-            <div class="feature-item"><span class="feature-icon">📈</span><span>Автоматический расчёт прибыли по каждой сделке</span></div>
+            <div class="feature-item"><span class="feature-icon">📈</span><span>Автоматический расчёт прибыли</span></div>
             <div class="feature-item"><span class="feature-icon">💱</span><span>Курсы USD, EUR, CNY в реальном времени</span></div>
             <div class="feature-item"><span class="feature-icon">📋</span><span>История сделок с поиском</span></div>
         </div>
@@ -894,195 +900,113 @@
 <button class="theme-toggle" id="themeToggle">🌙</button>
 <div class="container">
     <div id="homeTab" class="tab-content active">
-        
         <div class="profit-block">
             <div class="label">🏆 Реальная прибыль (RUB)</div>
             <div class="value" id="totalProfitRub">0 ₽</div>
         </div>
         
         <div class="rates-grid">
-            <div class="rate-card">
-                <div class="currency">💵 USD</div>
-                <div class="value" id="usdRate">—</div>
-                <div class="update-time" id="usdUpdate">—</div>
-            </div>
-            <div class="rate-card">
-                <div class="currency">💶 EUR</div>
-                <div class="value" id="eurRate">—</div>
-                <div class="update-time" id="eurUpdate">—</div>
-            </div>
-            <div class="rate-card">
-                <div class="currency">¥ CNY</div>
-                <div class="value" id="cnyRate">—</div>
-                <div class="update-time" id="cnyUpdate">—</div>
-            </div>
+            <div class="rate-card"><div class="currency">💵 USD</div><div class="value" id="usdRate">—</div><div class="update-time" id="usdUpdate">—</div></div>
+            <div class="rate-card"><div class="currency">💶 EUR</div><div class="value" id="eurRate">—</div><div class="update-time" id="eurUpdate">—</div></div>
+            <div class="rate-card"><div class="currency">¥ CNY</div><div class="value" id="cnyRate">—</div><div class="update-time" id="cnyUpdate">—</div></div>
         </div>
 
         <div class="card">
             <h2>📊 P2P Статистика</h2>
-            
             <div class="stat-group">
                 <div class="stat-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">💰 Куплено (USDT)</div>
-                        <div class="stat-value buy" id="totalBuy">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">💸 Продано (USDT)</div>
-                        <div class="stat-value sell" id="totalSell">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">📈 Остаток в кошельке (USDT)</div>
-                        <div class="stat-value" id="netBalance">0</div>
-                    </div>
+                    <div class="stat-item"><div class="stat-label">💰 Куплено (USDT)</div><div class="stat-value buy" id="totalBuy">0</div></div>
+                    <div class="stat-item"><div class="stat-label">💸 Продано (USDT)</div><div class="stat-value sell" id="totalSell">0</div></div>
+                    <div class="stat-item"><div class="stat-label">📈 Остаток (USDT)</div><div class="stat-value" id="netBalance">0</div></div>
                 </div>
             </div>
-            
             <div class="stat-group-divider"></div>
-            
             <div class="stat-group">
                 <div class="stat-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">💰 Сумма покупок (RUB)</div>
-                        <div class="stat-value" id="totalBuyRub">0 ₽</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">💸 Сумма продаж (RUB)</div>
-                        <div class="stat-value" id="totalSellRub">0 ₽</div>
-                    </div>
+                    <div class="stat-item"><div class="stat-label">💰 Сумма покупок (RUB)</div><div class="stat-value" id="totalBuyRub">0 ₽</div></div>
+                    <div class="stat-item"><div class="stat-label">💸 Сумма продаж (RUB)</div><div class="stat-value" id="totalSellRub">0 ₽</div></div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="deals-header">
-                <h2>📋 Последние операции</h2>
-            </div>
-            
+            <div class="deals-header"><h2>📋 Последние операции</h2></div>
             <div class="deals-stats-row">
-                <div class="deal-stat-chip">
-                    <div class="label">📊 Всего</div>
-                    <div class="value" id="totalOperationsCount">0</div>
-                </div>
-                <div class="deal-stat-chip">
-                    <div class="label">🟢 Покупок</div>
-                    <div class="value" id="totalBuysCount">0</div>
-                </div>
-                <div class="deal-stat-chip">
-                    <div class="label">🔴 Продаж</div>
-                    <div class="value" id="totalSellsCount">0</div>
-                </div>
+                <div class="deal-stat-chip"><div class="label">📊 Всего</div><div class="value" id="totalOperationsCount">0</div></div>
+                <div class="deal-stat-chip"><div class="label">🟢 Покупок</div><div class="value" id="totalBuysCount">0</div></div>
+                <div class="deal-stat-chip"><div class="label">🔴 Продаж</div><div class="value" id="totalSellsCount">0</div></div>
             </div>
-            
             <div id="recentDealsList"></div>
-            
-            <button id="showAllHistoryBtn" class="btn btn-secondary">📋 Показать всю историю сделок</button>
+            <button id="showAllHistoryBtn" class="btn-secondary">📋 Показать всю историю сделок</button>
         </div>
     </div>
 
+    <!-- История сделок (модальное окно) -->
     <div id="historyModal" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 550px; max-height: 80vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <h3 style="margin-bottom: 0;">📋 Вся история</h3>
                 <button id="closeHistoryBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b;">&times;</button>
             </div>
-            
             <div class="search-history">
-                <div class="search-box">
-                    <input type="text" id="historySearchInput" placeholder="🔍 Поиск по контрагенту или комментарию">
-                </div>
+                <div class="search-box"><input type="text" id="historySearchInput" placeholder="🔍 Поиск по контрагенту или комментарию"></div>
             </div>
-            
             <div class="filter-buttons">
                 <button class="filter-pill active" data-history-filter="all">Все</button>
                 <button class="filter-pill" data-history-filter="buy">🟢 Покупки</button>
                 <button class="filter-pill" data-history-filter="sell">🔴 Продажи</button>
             </div>
-            
             <div id="historyDealsList"></div>
         </div>
     </div>
 
+    <!-- Создать сделку -->
     <div id="createTab" class="tab-content">
         <div class="card">
             <h2>➕ Новая сделка</h2>
             <form id="dealForm">
-                <div class="input-group">
-                    <label>Тип операции</label>
-                    <div class="select-wrapper">
-                        <select id="dealType" required>
-                            <option value="buy">Покупка USDT</option>
-                            <option value="sell">Продажа USDT</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Дата сделки (ДД.ММ.ГГ)</label>
-                    <input type="text" id="dealDate" placeholder="Например: 25.05.26" maxlength="10" required>
-                </div>
-                <div class="input-group">
-                    <label>Сумма оплаты (RUB)</label>
-                    <input type="number" id="amountPaid" placeholder="5000" step="0.01" required>
-                </div>
-                <div class="input-group">
-                    <label>Количество USDT</label>
-                    <input type="number" id="usdtAmount" placeholder="100" step="0.01" required>
-                </div>
-                <div class="input-group">
-                    <label>Цена за 1 USDT</label>
-                    <input type="number" id="pricePerUsdt" placeholder="Цена по которой купили/продали USDT" step="0.01">
-                </div>
-                <div class="input-group">
-                    <label>Метод оплаты</label>
-                    <input type="text" id="counterparty" placeholder="Сбербанк/Т-банк/Сбербанк(СБП) и тд">
-                </div>
-                <div class="input-group">
-                    <label>Номер сделки</label>
-                    <input type="text" id="dealNumber" placeholder="Номер сделки (опционально)">
-                </div>
-                <div class="input-group">
-                    <label>Ссылка на чек оплаты</label>
-                    <textarea id="comment" rows="2" placeholder="Ссылка на чек (Google Disk и т.п.)"></textarea>
-                </div>
+                <div class="input-group"><label>Тип операции</label><div class="select-wrapper"><select id="dealType" required><option value="buy">Покупка USDT</option><option value="sell">Продажа USDT</option></select></div></div>
+                <div class="input-group"><label>Дата сделки (ДД.ММ.ГГ)</label><input type="text" id="dealDate" placeholder="25.05.26" maxlength="10"></div>
+                <div class="input-group"><label>Сумма оплаты (RUB)</label><input type="number" id="amountPaid" placeholder="5000" step="0.01"></div>
+                <div class="input-group"><label>Количество USDT</label><input type="number" id="usdtAmount" placeholder="100" step="0.01"></div>
+                <div class="input-group"><label>Цена за 1 USDT</label><input type="number" id="pricePerUsdt" placeholder="Цена по которой купили/продали USDT" step="0.01"></div>
+                <div class="input-group"><label>Метод оплаты</label><input type="text" id="counterparty" placeholder="Сбербанк/Т-банк"></div>
+                <div class="input-group"><label>Номер сделки</label><input type="text" id="dealNumber" placeholder="Опционально"></div>
+                <div class="input-group"><label>Ссылка на чек оплаты</label><textarea id="comment" rows="2"></textarea></div>
                 <button type="submit" class="btn">✨ Записать сделку</button>
             </form>
         </div>
     </div>
     
+    <!-- Калькулятор -->
     <div id="calculatorTab" class="tab-content">
         <div class="card">
             <h2>🧮 Узнать количество покупаемого USDT</h2>
-            <div class="input-group">
-                <label>Сумма в RUB</label>
-                <input type="number" id="calcRub" placeholder="Введите сумму">
-            </div>
-            <div class="input-group">
-                <label>Курс USDT (₽)</label>
-                <input type="number" id="calcRate" placeholder="Курс за 1 USDT" value="">
-            </div>
+            <div class="input-group"><label>Сумма в RUB</label><input type="number" id="calcRub" placeholder="Введите сумму"></div>
+            <div class="input-group"><label>Курс USDT (₽)</label><input type="number" id="calcRate" placeholder="Курс за 1 USDT" value=""></div>
             <button id="calcBtn" class="btn">Рассчитать</button>
             <div id="calcResult" class="calc-result">💵 Вы получите: 0 USDT</div>
         </div>
         <div class="card">
             <h2>📊 Узнать по какому курсу купили USDT</h2>
-            <div class="input-group">
-                <label>Сумма RUB</label>
-                <input type="number" id="quickRub" placeholder="Сумма">
-            </div>
-            <div class="input-group">
-                <label>Получено USDT</label>
-                <input type="number" id="quickUsdt" placeholder="USDT">
-            </div>
+            <div class="input-group"><label>Сумма RUB</label><input type="number" id="quickRub" placeholder="Сумма"></div>
+            <div class="input-group"><label>Получено USDT</label><input type="number" id="quickUsdt" placeholder="USDT"></div>
             <button id="quickCalcBtn" class="btn">Узнать цену</button>
             <div id="quickResult" class="calc-result" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">💰 Цена: 0 ₽</div>
         </div>
     </div>
 
+    <!-- Прочее (PDF экспорт) -->
     <div id="supportTab" class="tab-content">
+        <div class="card">
+            <h2>📎 Экспорт в PDF</h2>
+            <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Скачайте отчёт по всем сделкам</p>
+            <button id="exportPdfBtn" class="btn">📄 Скачать PDF</button>
+        </div>
         <div class="support-chat">
             <div style="font-size: 40px;">🛟</div>
             <h3>Техподдержка</h3>
-            <p>Напишите нам, если нашли баг или есть идеи по улучшению приложения!</p>
+            <p>Напишите нам, если нашли баг или есть идеи!</p>
             <button id="supportBtn" class="btn">📩 Открыть чат</button>
             <p style="margin-top: 16px; font-size: 11px; opacity: 0.7;">tg: @KyratovVD</p>
         </div>
@@ -1090,28 +1014,16 @@
 </div>
 
 <div class="tabs">
-    <button class="tab-btn active" data-tab="home">
-        <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M3 9.5L12 3l9 6.5M5 10v9a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-9"/></svg>
-        <span>Главная</span>
-    </button>
-    <button class="tab-btn" data-tab="create">
-        <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
-        <span>Создать</span>
-    </button>
-    <button class="tab-btn" data-tab="calculator">
-        <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h4"/></svg>
-        <span>Калькулятор</span>
-    </button>
-    <button class="tab-btn" data-tab="support">
-        <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M21 12a9 9 0 1 1-9-9m0 4v5l3 2"/><circle cx="12" cy="16" r="0.5"/></svg>
-        <span>Поддержка</span>
-    </button>
+    <button class="tab-btn active" data-tab="home"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M3 9.5L12 3l9 6.5M5 10v9a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-9"/></svg><span>Главная</span></button>
+    <button class="tab-btn" data-tab="create"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg><span>Создать</span></button>
+    <button class="tab-btn" data-tab="calculator"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h4"/></svg><span>Калькулятор</span></button>
+    <button class="tab-btn" data-tab="support"><svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><circle cx="5" cy="12" r="2.5"/></svg><span>Прочее</span></button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+    // ===== ДАННЫЕ =====
     let deals = [];
-    let currentFilter = 'all';
-    let searchQuery = '';
     let historyFilter = 'all';
     let historySearchQuery = '';
     let currentUsdRate = 0;
@@ -1133,76 +1045,41 @@
             currentUsdRate = data.rates.RUB;
             currentEurRate = data.rates.EUR;
             currentCnyRate = data.rates.CNY;
-            
             document.getElementById('usdRate').innerHTML = currentUsdRate.toFixed(2) + ' ₽';
             document.getElementById('eurRate').innerHTML = (currentUsdRate / currentEurRate).toFixed(2) + ' ₽';
             document.getElementById('cnyRate').innerHTML = (currentUsdRate / currentCnyRate).toFixed(2) + ' ₽';
             updateLastUpdateTime();
-        } catch (error) {
-            console.error('Ошибка загрузки курсов:', error);
-        }
+        } catch(e) { console.error(e); }
     }
 
     let currentUserId = null;
-
     function getCurrentUserId() {
         if (currentUserId) return currentUserId;
-        
         if (window.Telegram && Telegram.WebApp) {
             const user = Telegram.WebApp.initDataUnsafe?.user;
-            if (user && user.id) {
-                currentUserId = user.id.toString();
-                return currentUserId;
-            }
+            if (user && user.id) { currentUserId = user.id.toString(); return currentUserId; }
         }
-        
         let guestId = localStorage.getItem('p2p_guest_id');
-        if (!guestId) {
-            guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            localStorage.setItem('p2p_guest_id', guestId);
-        }
+        if (!guestId) { guestId = 'guest_' + Date.now(); localStorage.setItem('p2p_guest_id', guestId); }
         currentUserId = guestId;
         return currentUserId;
     }
-
-    function getStorageKey() {
-        return `p2p_deals_${getCurrentUserId()}`;
-    }
+    function getStorageKey() { return `p2p_deals_${getCurrentUserId()}`; }
 
     function loadData() {
         const stored = localStorage.getItem(getStorageKey());
         if(stored) deals = JSON.parse(stored);
         else deals = [];
         renderAll();
-        updateDealsStats();
+        updateStats();
     }
+    function saveData() { localStorage.setItem(getStorageKey(), JSON.stringify(deals)); }
 
-    function saveData() { 
-        localStorage.setItem(getStorageKey(), JSON.stringify(deals)); 
-    }
+    function addDeal(deal) { deal.id = Date.now(); deal.date = Date.now(); deals.unshift(deal); saveData(); renderAll(); updateStats(); }
+    function updateDeal(id, updated) { const i = deals.findIndex(d => d.id === id); if(i !== -1) { deals[i] = {...deals[i], ...updated, id}; saveData(); renderAll(); updateStats(); } }
+    function deleteDeal(id) { deals = deals.filter(d => d.id !== id); saveData(); renderAll(); updateStats(); }
 
-    function addDeal(deal) {
-        deal.id = Date.now();
-        if (!deal.date) deal.date = Date.now();
-        deals.unshift(deal);
-        saveData();
-        renderAll();
-        updateDealsStats();
-    }
-
-    function updateDeal(id, updated) { 
-        const index = deals.findIndex(d => d.id === id);
-        if(index !== -1) { deals[index] = {...deals[index], ...updated, id}; saveData(); renderAll(); updateDealsStats(); }
-    }
-
-    function deleteDeal(id) { 
-        deals = deals.filter(d => d.id !== id); 
-        saveData(); 
-        renderAll();
-        updateDealsStats();
-    }
-
-    function updateDealsStats() {
+    function updateStats() {
         const buys = deals.filter(d => d.type === 'buy');
         const sells = deals.filter(d => d.type === 'sell');
         document.getElementById('totalOperationsCount').innerText = deals.length;
@@ -1210,7 +1087,7 @@
         document.getElementById('totalSellsCount').innerText = sells.length;
     }
 
-    function getFilteredDealsForHistory() {
+    function getFilteredHistory() {
         return deals.filter(deal => {
             if(historyFilter !== 'all' && deal.type !== historyFilter) return false;
             if(historySearchQuery) {
@@ -1224,396 +1101,245 @@
         });
     }
 
-    // НОВАЯ ФОРМУЛА РАСЧЁТА ПРИБЫЛИ
     function calculateRealProfit() {
-        const buys = deals.filter(d => d.type === 'buy').sort((a, b) => a.date - b.date);
-        const sells = deals.filter(d => d.type === 'sell').sort((a, b) => a.date - b.date);
-        
-        let totalProfit = 0;
-        let buyIndex = 0;
-        let buyRemaining = buys[0] ? buys[0].usdtAmount : 0;
-        let currentBuyPrice = buys[0] ? (buys[0].pricePerUsdt || buys[0].amountPaid / buys[0].usdtAmount) : 0;
-        
-        for (const sell of sells) {
+        const buys = deals.filter(d => d.type === 'buy').sort((a,b) => a.date - b.date);
+        const sells = deals.filter(d => d.type === 'sell').sort((a,b) => a.date - b.date);
+        let profit = 0, buyIdx = 0, buyRemaining = buys[0]?.usdtAmount || 0;
+        let buyPrice = buys[0]?.pricePerUsdt || (buys[0]?.amountPaid / buys[0]?.usdtAmount) || 0;
+        for(const sell of sells) {
             let sellAmount = sell.usdtAmount;
             const sellPrice = sell.pricePerUsdt || sell.amountPaid / sell.usdtAmount;
-            
-            while (sellAmount > 0 && buyIndex < buys.length) {
-                if (buyRemaining === 0) {
-                    buyIndex++;
-                    if (buyIndex >= buys.length) break;
-                    buyRemaining = buys[buyIndex].usdtAmount;
-                    currentBuyPrice = buys[buyIndex].pricePerUsdt || buys[buyIndex].amountPaid / buys[buyIndex].usdtAmount;
-                }
-                
-                const usedAmount = Math.min(sellAmount, buyRemaining);
-                const profit = (sellPrice - currentBuyPrice) * usedAmount;
-                totalProfit += profit;
-                
-                sellAmount -= usedAmount;
-                buyRemaining -= usedAmount;
+            while(sellAmount > 0 && buyIdx < buys.length) {
+                if(buyRemaining === 0) { buyIdx++; if(buyIdx >= buys.length) break; buyRemaining = buys[buyIdx].usdtAmount; buyPrice = buys[buyIdx].pricePerUsdt || buys[buyIdx].amountPaid / buys[buyIdx].usdtAmount; }
+                const used = Math.min(sellAmount, buyRemaining);
+                profit += (sellPrice - buyPrice) * used;
+                sellAmount -= used; buyRemaining -= used;
             }
         }
-        
-        return totalProfit;
+        return profit;
     }
 
     function calcAnalytics() {
         const buys = deals.filter(d => d.type === 'buy');
         const sells = deals.filter(d => d.type === 'sell');
-        
         const totalBuyUsdt = buys.reduce((s,d) => s + d.usdtAmount,0);
         const totalSellUsdt = sells.reduce((s,d) => s + d.usdtAmount,0);
         const totalBuyRub = buys.reduce((s,d) => s + d.amountPaid,0);
         const totalSellRub = sells.reduce((s,d) => s + d.amountPaid,0);
-        
-        const realProfit = calculateRealProfit();
-        
+        const profit = calculateRealProfit();
         document.getElementById('totalBuy').innerText = totalBuyUsdt.toFixed(2);
         document.getElementById('totalSell').innerText = totalSellUsdt.toFixed(2);
         document.getElementById('netBalance').innerText = (totalBuyUsdt - totalSellUsdt).toFixed(2);
-        
         document.getElementById('totalBuyRub').innerHTML = totalBuyRub.toFixed(2) + ' ₽';
         document.getElementById('totalSellRub').innerHTML = totalSellRub.toFixed(2) + ' ₽';
-        
-        const profitColor = realProfit >= 0 ? '#10b981' : '#ef4444';
-        document.getElementById('totalProfitRub').style.color = profitColor;
-        document.getElementById('totalProfitRub').innerHTML = realProfit.toFixed(2) + ' ₽';
+        document.getElementById('totalProfitRub').innerHTML = profit.toFixed(2) + ' ₽';
+        document.getElementById('totalProfitRub').style.color = profit >= 0 ? '#10b981' : '#ef4444';
     }
 
-    function isValidDate(dateStr) {
-        const regex = /^(\d{2})\.(\d{2})\.(\d{2})$/;
-        if (!regex.test(dateStr)) return false;
-        
-        const day = parseInt(dateStr.split('.')[0], 10);
-        const month = parseInt(dateStr.split('.')[1], 10);
-        const year = parseInt(dateStr.split('.')[2], 10);
-        
-        if (day < 1 || day > 31) return false;
-        if (month < 1 || month > 12) return false;
-        if (year < 0 || year > 99) return false;
-        
-        return true;
-    }
-
-    function formatDate(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-    }
+    function isValidDate(str) { return /^(\d{2})\.(\d{2})\.(\d{2})$/.test(str); }
+    function formatDate(ts) { return new Date(ts).toLocaleDateString('ru-RU', { day:'numeric', month:'short' }); }
 
     function renderDealCard(deal) {
-        // Используем сохранённую цену, если она есть
         const price = deal.pricePerUsdt ? deal.pricePerUsdt.toFixed(2) : (deal.amountPaid / deal.usdtAmount).toFixed(2);
         const isBuy = deal.type === 'buy';
-        return `
-            <div class="transaction-card">
-                <div class="transaction-header">
-                    <div class="transaction-type">
-                        <div class="type-icon ${isBuy ? 'buy' : 'sell'}">
-                            ${isBuy ? '🟢' : '🔴'}
-                        </div>
-                        <div class="type-name">${isBuy ? 'Покупка USDT' : 'Продажа USDT'}</div>
-                    </div>
-                    <div class="transaction-date">${deal.customDate || formatDate(deal.date)}</div>
+        return `<div class="transaction-card">
+            <div class="transaction-header">
+                <div class="transaction-type">
+                    <div class="type-icon ${isBuy ? 'buy' : 'sell'}">${isBuy ? '🟢' : '🔴'}</div>
+                    <div class="type-name">${isBuy ? 'Покупка USDT' : 'Продажа USDT'}</div>
                 </div>
-                <div class="transaction-body">
-                    <div class="amount-row">
-                        <span class="rub-amount">${deal.amountPaid.toLocaleString()} ₽</span>
-                        <span class="usdt-amount">${deal.usdtAmount.toFixed(2)} USDT</span>
-                    </div>
-                    <div class="price-row" style="display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px solid #e2e8f0;">
-                        <span class="price-label">💰 Ваша цена</span>
-                        <span class="price-value">${price} ₽ за 1 USDT</span>
-                    </div>
-                    ${deal.counterparty ? `
-                        <div class="info-row">
-                            <span class="info-label">Метод оплаты:</span>
-                            <span>${deal.counterparty}</span>
-                        </div>
-                    ` : ''}
-                    ${deal.dealNumber ? `
-                        <div class="info-row">
-                            <span class="info-label">Номер сделки:</span>
-                            <span>${deal.dealNumber}</span>
-                        </div>
-                    ` : ''}
-                    ${deal.comment ? `
-                        <div class="info-row">
-                            <span class="info-label">Ссылка на чек:</span>
-                            <a href="${deal.comment}" target="_blank" rel="noopener noreferrer">${deal.comment.length > 50 ? deal.comment.substring(0, 47) + '...' : deal.comment}</a>
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="transaction-footer">
-                    <button class="action-btn edit" data-id="${deal.id}">✏️ Редактировать</button>
-                    <button class="action-btn delete" data-id="${deal.id}">🗑️ Удалить</button>
-                </div>
+                <div class="transaction-date">${deal.customDate || formatDate(deal.date)}</div>
             </div>
-        `;
+            <div class="transaction-body">
+                <div class="amount-row"><span class="rub-amount">${deal.amountPaid.toLocaleString()} ₽</span><span class="usdt-amount">${deal.usdtAmount.toFixed(2)} USDT</span></div>
+                <div class="price-row"><span class="price-label">💰 Ваша цена</span><span class="price-value">${price} ₽</span></div>
+                ${deal.counterparty ? `<div class="info-row"><span class="info-label">Метод оплаты:</span><span>${deal.counterparty}</span></div>` : ''}
+                ${deal.dealNumber ? `<div class="info-row"><span class="info-label">Номер сделки:</span><span>${deal.dealNumber}</span></div>` : ''}
+                ${deal.comment ? `<div class="info-row"><span class="info-label">Ссылка на чек:</span><a href="${deal.comment}" target="_blank">${deal.comment.length > 50 ? deal.comment.substring(0,47)+'...' : deal.comment}</a></div>` : ''}
+            </div>
+            <div class="transaction-footer">
+                <button class="action-btn edit" data-id="${deal.id}">✏️ Редактировать</button>
+                <button class="action-btn delete" data-id="${deal.id}">🗑️ Удалить</button>
+            </div>
+        </div>`;
     }
 
-    function renderRecentDeals() {
-        const recent = deals.slice(0, 3);
+    function renderRecent() {
         const container = document.getElementById('recentDealsList');
-        if(recent.length === 0) {
-            container.innerHTML = '<div class="empty-state">📭 Нет сделок. Создайте первую!</div>';
-            return;
-        }
-        container.innerHTML = recent.map(deal => renderDealCard(deal)).join('');
-        
-        attachActionButtons();
+        if(deals.length === 0) { container.innerHTML = '<div class="empty-state">📭 Нет сделок</div>'; return; }
+        container.innerHTML = deals.slice(0,3).map(renderDealCard).join('');
+        attachEvents();
     }
 
-    function renderHistoryDeals() {
-        const filtered = getFilteredDealsForHistory();
+    function renderHistory() {
+        const filtered = getFilteredHistory();
         const container = document.getElementById('historyDealsList');
-        if(filtered.length === 0) {
-            container.innerHTML = '<div class="empty-state">📭 Сделок не найдено</div>';
-            return;
-        }
-        container.innerHTML = filtered.map(deal => renderDealCard(deal)).join('');
-        
-        attachHistoryActionButtons();
+        if(filtered.length === 0) { container.innerHTML = '<div class="empty-state">📭 Сделок не найдено</div>'; return; }
+        container.innerHTML = filtered.map(renderDealCard).join('');
+        attachHistoryEvents();
     }
 
-    function attachActionButtons() {
-        document.querySelectorAll('#recentDealsList .action-btn.delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                if(confirm('Удалить сделку?')) deleteDeal(id);
-            });
-        });
-        document.querySelectorAll('#recentDealsList .action-btn.edit').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                openEditModal(id);
-            });
-        });
+    function attachEvents() {
+        document.querySelectorAll('#recentDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить?')) deleteDeal(parseInt(btn.dataset.id)); });
+        document.querySelectorAll('#recentDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(parseInt(btn.dataset.id)));
     }
 
-    function attachHistoryActionButtons() {
-        document.querySelectorAll('#historyDealsList .action-btn.delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                if(confirm('Удалить сделку?')) deleteDeal(id);
-            });
-        });
-        document.querySelectorAll('#historyDealsList .action-btn.edit').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                openEditModal(id);
-            });
-        });
+    function attachHistoryEvents() {
+        document.querySelectorAll('#historyDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить?')) deleteDeal(parseInt(btn.dataset.id)); });
+        document.querySelectorAll('#historyDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(parseInt(btn.dataset.id)));
     }
 
-    function renderAll() { 
-        calcAnalytics(); 
-        renderRecentDeals();
-        if (document.getElementById('historyDealsList')) {
-            renderHistoryDeals();
-        }
-    }
+    function renderAll() { calcAnalytics(); renderRecent(); }
 
     function openEditModal(id) {
         const deal = deals.find(d => d.id === id);
         if(!deal) return;
-        const modalHtml = `
-            <div class="modal" id="editModal">
-                <div class="modal-content">
-                    <h3>✏️ Редактировать сделку</h3>
-                    <div class="input-group">
-                        <label>Тип операции</label>
-                        <div class="select-wrapper">
-                            <select id="editType">
-                                <option value="buy" ${deal.type === 'buy' ? 'selected' : ''}>Покупка USDT</option>
-                                <option value="sell" ${deal.type === 'sell' ? 'selected' : ''}>Продажа USDT</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input-group"><label>Дата сделки (ДД.ММ.ГГ)</label><input type="text" id="editDate" value="${deal.customDate || ''}" placeholder="25.05.26"></div>
-                    <div class="input-group"><label>Сумма RUB</label><input type="number" id="editAmount" value="${deal.amountPaid}" step="0.01"></div>
-                    <div class="input-group"><label>USDT</label><input type="number" id="editUsdt" value="${deal.usdtAmount}" step="0.01"></div>
-                    <div class="input-group"><label>Цена за 1 USDT</label><input type="number" id="editPrice" value="${deal.pricePerUsdt || (deal.amountPaid/deal.usdtAmount).toFixed(2)}" step="0.01"></div>
-                    <div class="input-group"><label>Метод оплаты</label><input type="text" id="editCounterparty" value="${deal.counterparty || ''}"></div>
-                    <div class="input-group"><label>Номер сделки</label><input type="text" id="editDealNumber" value="${deal.dealNumber || ''}"></div>
-                    <div class="input-group"><label>Ссылка на чек</label><textarea id="editComment" rows="2">${deal.comment || ''}</textarea></div>
-                    <button id="saveEditBtn" class="btn">💾 Сохранить</button>
-                    <button id="closeModalBtn" class="btn" style="background:#94a3b8; margin-top:8px;">Отмена</button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        document.getElementById('saveEditBtn').onclick = () => {
-            const newType = document.getElementById('editType').value;
-            const newDate = document.getElementById('editDate').value;
-            const newAmount = parseFloat(document.getElementById('editAmount').value);
-            const newUsdt = parseFloat(document.getElementById('editUsdt').value);
-            let newPrice = document.getElementById('editPrice').value;
-            const newCounterparty = document.getElementById('editCounterparty').value;
-            const newDealNumber = document.getElementById('editDealNumber').value;
-            const newComment = document.getElementById('editComment').value;
-            
-            if(isNaN(newAmount) || isNaN(newUsdt)) { alert('Введите числа'); return; }
-            if(newDate && !isValidDate(newDate)) { alert('Неверный формат даты! Используйте ДД.ММ.ГГ'); return; }
-            
-            // Сохраняем введённую цену, если она есть
-            if (newPrice && !isNaN(parseFloat(newPrice)) && parseFloat(newPrice) > 0) {
-                newPrice = parseFloat(newPrice);
-            } else {
-                newPrice = newAmount / newUsdt;
-            }
-            
-            updateDeal(id, { 
-                type: newType,
-                amountPaid: newAmount, 
-                usdtAmount: newUsdt, 
-                pricePerUsdt: parseFloat(newPrice.toFixed(2)), 
-                counterparty: newCounterparty, 
-                dealNumber: newDealNumber, 
-                comment: newComment,
-                customDate: newDate
-            });
-            document.getElementById('editModal').remove();
-        };
-        document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').remove();
+        const newType = prompt('Тип (buy/sell):', deal.type);
+        const newAmount = parseFloat(prompt('Сумма RUB:', deal.amountPaid));
+        const newUsdt = parseFloat(prompt('Количество USDT:', deal.usdtAmount));
+        const newPrice = parseFloat(prompt('Цена за 1 USDT:', deal.pricePerUsdt || (deal.amountPaid/deal.usdtAmount).toFixed(2)));
+        const newCounterparty = prompt('Метод оплаты:', deal.counterparty || '');
+        if(isNaN(newAmount) || isNaN(newUsdt)) return;
+        updateDeal(id, { type: newType === 'sell' ? 'sell' : 'buy', amountPaid: newAmount, usdtAmount: newUsdt, pricePerUsdt: newPrice, counterparty: newCounterparty });
     }
 
-    document.getElementById('dealForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const type = document.getElementById('dealType').value;
-        let amountPaid = parseFloat(document.getElementById('amountPaid').value);
-        let usdtAmount = parseFloat(document.getElementById('usdtAmount').value);
-        let pricePerUsdt = document.getElementById('pricePerUsdt').value;
-        const counterparty = document.getElementById('counterparty').value;
-        const dealNumber = document.getElementById('dealNumber').value;
-        const comment = document.getElementById('comment').value;
-        const dealDate = document.getElementById('dealDate').value;
-        
-        if (!isValidDate(dealDate)) {
-            alert('Неверный формат даты! Используйте ДД.ММ.ГГ (Например: 25.05.26)');
+    // ===== ЭКСПОРТ В PDF =====
+    function exportToPDF() {
+        if(deals.length === 0) {
+            alert('Нет сделок для экспорта');
             return;
         }
         
-        if(isNaN(amountPaid) || isNaN(usdtAmount)) { alert('Заполните поля суммы и количества USDT'); return; }
+        let htmlContent = `
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body { font-family: system-ui, sans-serif; padding: 20px; }
+                    h1 { color: #3b82f6; text-align: center; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .date { color: #64748b; text-align: center; margin-bottom: 20px; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background: #3b82f6; color: white; }
+                    .total { margin-top: 20px; font-weight: bold; text-align: right; }
+                    .profit { color: #10b981; }
+                    .loss { color: #ef4444; }
+                </style>
+            </head>
+            <body>
+                <h1>📊 P2P Tracker Pro — Отчёт по сделкам</h1>
+                <div class="header">
+                    <div>Дата отчёта: ${new Date().toLocaleString('ru-RU')}</div>
+                    <div>Всего сделок: ${deals.length}</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Дата</th><th>Тип</th><th>Сумма (RUB)</th><th>USDT</th><th>Цена</th><th>Метод оплаты</th><th>Номер сделки</th></tr>
+                    </thead>
+                    <tbody>
+        `;
         
-        // Сохраняем введённую цену, если она есть
-        if (pricePerUsdt && !isNaN(parseFloat(pricePerUsdt)) && parseFloat(pricePerUsdt) > 0) {
-            pricePerUsdt = parseFloat(pricePerUsdt);
-        } else {
-            pricePerUsdt = amountPaid / usdtAmount;
-        }
-        
-        addDeal({ 
-            type, 
-            amountPaid, 
-            usdtAmount, 
-            pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)), 
-            counterparty, 
-            dealNumber,
-            comment,
-            customDate: dealDate
+        deals.forEach(d => {
+            const price = d.pricePerUsdt ? d.pricePerUsdt.toFixed(2) : (d.amountPaid/d.usdtAmount).toFixed(2);
+            htmlContent += `<tr>
+                <td>${d.customDate || new Date(d.date).toLocaleDateString()}</td>
+                <td>${d.type === 'buy' ? 'Покупка' : 'Продажа'}</td>
+                <td>${d.amountPaid.toLocaleString()} ₽</td>
+                <td>${d.usdtAmount.toFixed(2)}</td>
+                <td>${price} ₽</td>
+                <td>${d.counterparty || '-'}</td>
+                <td>${d.dealNumber || '-'}</td>
+            </tr>`;
         });
-        document.getElementById('dealForm').reset();
-        switchTab('home');
-    });
-
-    document.getElementById('calcBtn').onclick = () => {
-        const rub = parseFloat(document.getElementById('calcRub').value);
-        const rate = parseFloat(document.getElementById('calcRate').value);
-        if(isNaN(rub) || isNaN(rate)) { alert('Введите данные'); return; }
-        document.getElementById('calcResult').innerHTML = `💵 Вы получите: ${(rub/rate).toFixed(2)} USDT`;
-        document.getElementById('calcRub').value = '';
-        document.getElementById('calcRate').value = '';
-    };
-    
-    document.getElementById('quickCalcBtn').onclick = () => {
-        const rub = parseFloat(document.getElementById('quickRub').value);
-        const usdt = parseFloat(document.getElementById('quickUsdt').value);
-        if(isNaN(rub) || isNaN(usdt) || usdt === 0) { alert('Введите данные'); return; }
-        document.getElementById('quickResult').innerHTML = `💰 Цена: ${(rub/usdt).toFixed(2)} ₽`;
-        document.getElementById('quickRub').value = '';
-        document.getElementById('quickUsdt').value = '';
-    };
-
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(`${tabId}Tab`).classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        
+        const buys = deals.filter(d => d.type === 'buy');
+        const sells = deals.filter(d => d.type === 'sell');
+        const profit = calculateRealProfit();
+        
+        htmlContent += `
+                    </tbody>
+                </table>
+                <div class="total">
+                    <div>💰 Сумма покупок: ${buys.reduce((s,d) => s + d.amountPaid,0).toFixed(2)} ₽</div>
+                    <div>💸 Сумма продаж: ${sells.reduce((s,d) => s + d.amountPaid,0).toFixed(2)} ₽</div>
+                    <div class="${profit >= 0 ? 'profit' : 'loss'}">🏆 Итоговая прибыль: ${profit.toFixed(2)} ₽</div>
+                </div>
+                <div class="date" style="margin-top: 30px;">Отчёт сгенерирован в P2P Tracker Pro</div>
+            </body>
+            </html>
+        `;
+        
+        const element = document.createElement('div');
+        element.innerHTML = htmlContent;
+        const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `p2p_report_${new Date().toISOString().slice(0,10)}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+        html2pdf().set(opt).from(element).save();
     }
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
-    });
+    // ===== ОБРАБОТЧИКИ =====
+    document.getElementById('dealForm').onsubmit = (e) => {
+        e.preventDefault();
+        const type = document.getElementById('dealType').value;
+        const amountPaid = parseFloat(document.getElementById('amountPaid').value);
+        const usdtAmount = parseFloat(document.getElementById('usdtAmount').value);
+        let price = document.getElementById('pricePerUsdt').value;
+        const counterparty = document.getElementById('counterparty').value;
+        const dealNumber = document.getElementById('dealNumber').value;
+        const comment = document.getElementById('comment').value;
+        const date = document.getElementById('dealDate').value;
+        if(isNaN(amountPaid) || isNaN(usdtAmount)) { alert('Заполните поля'); return; }
+        if(price && !isNaN(parseFloat(price))) price = parseFloat(price);
+        else price = amountPaid / usdtAmount;
+        addDeal({ type, amountPaid, usdtAmount, pricePerUsdt: parseFloat(price.toFixed(2)), counterparty, dealNumber, comment, customDate: date });
+        document.getElementById('dealForm').reset();
+    };
 
-    document.getElementById('supportBtn').addEventListener('click', () => {
-        if(window.Telegram?.WebApp) Telegram.WebApp.openTelegramLink('https://t.me/KyratovVD');
-        else window.open('https://t.me/KyratovVD', '_blank');
-    });
+    document.getElementById('calcBtn').onclick = () => { const r=parseFloat(document.getElementById('calcRub').value), rate=parseFloat(document.getElementById('calcRate').value); if(isNaN(r)||isNaN(rate)) return; document.getElementById('calcResult').innerHTML = `💵 ${(r/rate).toFixed(2)} USDT`; };
+    document.getElementById('quickCalcBtn').onclick = () => { const r=parseFloat(document.getElementById('quickRub').value), u=parseFloat(document.getElementById('quickUsdt').value); if(isNaN(r)||isNaN(u)||u===0) return; document.getElementById('quickResult').innerHTML = `💰 ${(r/u).toFixed(2)} ₽`; };
+    document.getElementById('supportBtn').onclick = () => window.open('https://t.me/KyratovVD', '_blank');
+    document.getElementById('exportPdfBtn').onclick = () => exportToPDF();
 
     const historyModal = document.getElementById('historyModal');
-    const showAllHistoryBtn = document.getElementById('showAllHistoryBtn');
-    const closeHistoryBtn = document.getElementById('closeHistoryBtn');
-
-    showAllHistoryBtn.addEventListener('click', () => {
-        renderHistoryDeals();
-        historyModal.style.display = 'flex';
-    });
-
-    closeHistoryBtn.addEventListener('click', () => {
-        historyModal.style.display = 'none';
-    });
-
-    historyModal.addEventListener('click', (e) => {
-        if (e.target === historyModal) {
-            historyModal.style.display = 'none';
-        }
-    });
-
-    document.getElementById('historySearchInput').addEventListener('input', (e) => {
-        historySearchQuery = e.target.value;
-        renderHistoryDeals();
-    });
-
+    document.getElementById('showAllHistoryBtn').onclick = () => { renderHistory(); historyModal.style.display = 'flex'; };
+    document.getElementById('closeHistoryBtn').onclick = () => { historyModal.style.display = 'none'; };
+    historyModal.onclick = (e) => { if(e.target === historyModal) historyModal.style.display = 'none'; };
+    document.getElementById('historySearchInput').oninput = (e) => { historySearchQuery = e.target.value; renderHistory(); };
     document.querySelectorAll('[data-history-filter]').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             document.querySelectorAll('[data-history-filter]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             historyFilter = btn.dataset.historyFilter;
-            renderHistoryDeals();
-        });
+            renderHistory();
+        };
     });
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${tabId}Tab`).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+    }
+    document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
 
     const themeToggle = document.getElementById('themeToggle');
     if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
-    themeToggle.onclick = () => {
-        document.body.classList.toggle('dark');
-        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-        themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-    };
+    themeToggle.onclick = () => { document.body.classList.toggle('dark'); localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; };
     themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
 
-    // ===== ПРИВЕТСТВЕННОЕ МЕНЮ =====
-    if (!localStorage.getItem('welcome_shown')) {
-        document.getElementById('welcomeOverlay').classList.remove('hide');
-    } else {
-        document.getElementById('welcomeOverlay').classList.add('hide');
-    }
-    document.getElementById('startBtn').onclick = () => {
-        localStorage.setItem('welcome_shown', 'true');
+    // ===== ЗАПУСК =====
+    if (!localStorage.getItem('welcome_shown')) document.getElementById('welcomeOverlay').classList.remove('hide');
+    else document.getElementById('welcomeOverlay').classList.add('hide');
+    
+    document.getElementById('startBtn').onclick = () => { 
+        localStorage.setItem('welcome_shown', 'true'); 
         document.getElementById('welcomeOverlay').classList.add('hide');
     };
-    document.getElementById('skipBtn').onclick = () => {
-        localStorage.setItem('welcome_shown', 'true');
+    document.getElementById('skipBtn').onclick = () => { 
+        localStorage.setItem('welcome_shown', 'true'); 
         document.getElementById('welcomeOverlay').classList.add('hide');
     };
 
     if(window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
-
     fetchExchangeRates();
     loadData();
     setInterval(fetchExchangeRates, 60000);
