@@ -375,8 +375,8 @@
         }
         
         .usdt-amount {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             color: #3b82f6;
         }
         
@@ -408,9 +408,9 @@
             color: #ef4444;
         }
         
-        .counterparty-row {
+        .info-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 6px;
             margin-top: 8px;
             padding: 5px 8px;
@@ -418,16 +418,12 @@
             border-radius: 14px;
             font-size: 11px;
             transition: background 0.3s, color 0.3s;
+            flex-wrap: wrap;
         }
         
-        .comment-row {
-            margin-top: 6px;
-            padding: 5px 8px;
-            background: #fefce8;
-            border-radius: 14px;
-            font-size: 11px;
-            color: #854d0e;
-            transition: background 0.3s, color 0.3s;
+        .info-label {
+            font-weight: 500;
+            color: #64748b;
         }
         
         .transaction-footer {
@@ -816,14 +812,13 @@
             border-top-color: #334155;
         }
         
-        body.dark .counterparty-row {
+        body.dark .info-row {
             background: #334155;
             color: #cbd5e1;
         }
         
-        body.dark .comment-row {
-            background: #422006;
-            color: #fde047;
+        body.dark .info-label {
+            color: #94a3b8;
         }
         
         body.dark .tabs {
@@ -905,10 +900,6 @@
             color: #f1f5f9;
         }
         
-        body.dark .usdt-amount {
-            color: #60a5fa;
-        }
-        
         body.dark .calc-result {
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
         }
@@ -931,6 +922,10 @@
         
         body.dark .support-chat {
             background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+        
+        body.dark .usdt-amount {
+            color: #60a5fa;
         }
     </style>
 </head>
@@ -1077,7 +1072,7 @@
                 </div>
                 <div class="input-group">
                     <label>Ссылка на чек оплаты</label>
-                    <textarea id="comment" rows="2" placeholder="К примеру PDF чек с google disk"></textarea>
+                    <textarea id="comment" rows="2" placeholder="Ссылка на чек (Google Disk и т.п.)"></textarea>
                 </div>
                 <button type="submit" class="btn">✨ Записать сделку</button>
             </form>
@@ -1202,44 +1197,41 @@
     // === РАЗДЕЛЕНИЕ ДАННЫХ ПО ПОЛЬЗОВАТЕЛЯМ ===
     let currentUserId = null;
 
-    // Получаем ID пользователя Telegram
     function getCurrentUserId() {
-    if (currentUserId) return currentUserId;
-    
-    if (window.Telegram && Telegram.WebApp) {
-        const user = Telegram.WebApp.initDataUnsafe?.user;
-        if (user && user.id) {
-            currentUserId = user.id.toString();
-            return currentUserId;
+        if (currentUserId) return currentUserId;
+        
+        if (window.Telegram && Telegram.WebApp) {
+            const user = Telegram.WebApp.initDataUnsafe?.user;
+            if (user && user.id) {
+                currentUserId = user.id.toString();
+                return currentUserId;
+            }
         }
+        
+        let guestId = localStorage.getItem('p2p_guest_id');
+        if (!guestId) {
+            guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            localStorage.setItem('p2p_guest_id', guestId);
+        }
+        currentUserId = guestId;
+        return currentUserId;
     }
-    
-    // Гостевой ID (для тестирования вне Telegram)
-    let guestId = localStorage.getItem('p2p_guest_id');
-    if (!guestId) {
-        guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-        localStorage.setItem('p2p_guest_id', guestId);
-    }
-    currentUserId = guestId;
-    return currentUserId;
-}
 
-    // Функция получения ключа для localStorage
     function getStorageKey() {
-    return `p2p_deals_${getCurrentUserId()}`;
+        return `p2p_deals_${getCurrentUserId()}`;
     }
 
     function loadData() {
-    const stored = localStorage.getItem(getStorageKey());
-    if(stored) deals = JSON.parse(stored);
-    else deals = [];
-    renderAll();
-    updateDealsStats();
-}
+        const stored = localStorage.getItem(getStorageKey());
+        if(stored) deals = JSON.parse(stored);
+        else deals = [];
+        renderAll();
+        updateDealsStats();
+    }
 
     function saveData() { 
-    localStorage.setItem(getStorageKey(), JSON.stringify(deals)); 
-}
+        localStorage.setItem(getStorageKey(), JSON.stringify(deals)); 
+    }
 
     function addDeal(deal) {
         deal.id = Date.now();
@@ -1307,7 +1299,6 @@
         document.getElementById('totalProfitRub').innerHTML = profitP2P.toFixed(2) + ' ₽';
     }
 
-    // Функция проверки формата даты ДД.ММ.ГГ
     function isValidDate(dateStr) {
         const regex = /^(\d{2})\.(\d{2})\.(\d{2})$/;
         if (!regex.test(dateStr)) return false;
@@ -1361,12 +1352,9 @@
                             <div class="type-icon ${isBuy ? 'buy' : 'sell'}">
                                 ${isBuy ? '🟢' : '🔴'}
                             </div>
-                            <div>
-                                <div class="type-name">${isBuy ? 'Покупка USDT' : 'Продажа USDT'}</div>
-                                <div class="transaction-date">${deal.customDate || formatDate(deal.date)}</div>
-                            </div>
+                            <div class="type-name">${isBuy ? 'Покупка USDT' : 'Продажа USDT'}</div>
                         </div>
-                        <div class="transaction-date">${formatFullDate(deal.date).split(',')[0]}</div>
+                        <div class="transaction-date">${deal.customDate || formatDate(deal.date)}</div>
                     </div>
                     <div class="transaction-body">
                         <div class="amount-row">
@@ -1379,20 +1367,21 @@
                         </div>
                         ${dealProfit}
                         ${deal.counterparty ? `
-                            <div class="counterparty-row">
-                                <span>👤</span>
+                            <div class="info-row">
+                                <span class="info-label">Метод оплаты:</span>
                                 <span>${deal.counterparty}</span>
                             </div>
                         ` : ''}
                         ${deal.dealNumber ? `
-                            <div class="counterparty-row">
-                                <span>🔢</span>
-                                <span>Номер сделки: ${deal.dealNumber}</span>
+                            <div class="info-row">
+                                <span class="info-label">Номер сделки:</span>
+                                <span>${deal.dealNumber}</span>
                             </div>
                         ` : ''}
                         ${deal.comment ? `
-                            <div class="comment-row">
-                                <span>💬 ${deal.comment}</span>
+                            <div class="info-row">
+                                <span class="info-label">Ссылка на чек:</span>
+                                <span>${deal.comment}</span>
                             </div>
                         ` : ''}
                     </div>
@@ -1433,7 +1422,7 @@
                     <div class="input-group"><label>USDT</label><input type="number" id="editUsdt" value="${deal.usdtAmount}" step="0.01"></div>
                     <div class="input-group"><label>Метод оплаты</label><input type="text" id="editCounterparty" value="${deal.counterparty || ''}"></div>
                     <div class="input-group"><label>Номер сделки</label><input type="text" id="editDealNumber" value="${deal.dealNumber || ''}"></div>
-                    <div class="input-group"><label>Комментарий</label><textarea id="editComment">${deal.comment || ''}</textarea></div>
+                    <div class="input-group"><label>Ссылка на чек</label><textarea id="editComment">${deal.comment || ''}</textarea></div>
                     <button id="saveEditBtn" class="btn">💾 Сохранить</button>
                     <button id="closeModalBtn" class="btn" style="background:#94a3b8; margin-top:8px;">Отмена</button>
                 </div>
@@ -1532,7 +1521,6 @@
         const comment = document.getElementById('comment').value;
         const dealDate = document.getElementById('dealDate').value;
         
-        // Проверка формата даты
         if (!isValidDate(dealDate)) {
             alert('Неверный формат даты! Используйте ДД.ММ.ГГ (Например: 25.05.26)');
             return;
