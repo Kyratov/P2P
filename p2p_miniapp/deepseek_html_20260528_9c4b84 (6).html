@@ -164,7 +164,7 @@
         .stat-value.profit { color: #f59e0b; }
 
         .profit-block {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border-radius: 28px;
             padding: 20px;
             margin-bottom: 20px;
@@ -380,7 +380,6 @@
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 10px;
-            text-align: center;
         }
         
         .rub-amount {
@@ -758,7 +757,6 @@
             transition: background 0.3s;
         }
 
-        /* === СТИЛИ ДЛЯ SELECT СТРЕЛКА ▼ === */
         .select-wrapper {
             position: relative;
         }
@@ -785,7 +783,6 @@
             color: #fbbf24;
         }
 
-        /* === ТЁМНАЯ ТЕМА === */
         body.dark {
             background: #0f172a;
             color: #f1f5f9;
@@ -971,11 +968,10 @@
 <body>
 <button class="theme-toggle" id="themeToggle">🌙</button>
 <div class="container">
-    <!-- Главная вкладка -->
     <div id="homeTab" class="tab-content active">
         
         <div class="profit-block">
-            <div class="label">🏆 Общая прибыль (RUB)</div>
+            <div class="label">🏆 Реальная прибыль (RUB)</div>
             <div class="value" id="totalProfitRub">0 ₽</div>
         </div>
         
@@ -1059,7 +1055,6 @@
         </div>
     </div>
 
-    <!-- История сделок (модальное окно) -->
     <div id="historyModal" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 550px; max-height: 80vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -1083,7 +1078,6 @@
         </div>
     </div>
 
-    <!-- Создать сделку -->
     <div id="createTab" class="tab-content">
         <div class="card">
             <h2>➕ Новая сделка</h2>
@@ -1130,7 +1124,6 @@
         </div>
     </div>
     
-    <!-- Калькулятор -->
     <div id="calculatorTab" class="tab-content">
         <div class="card">
             <h2>🧮 Узнать количество покупаемого USDT</h2>
@@ -1160,7 +1153,6 @@
         </div>
     </div>
 
-    <!-- Поддержка + Экспорт + Импорт + Корректировка баланса -->
     <div id="supportTab" class="tab-content">
         <div class="support-blocks">
             <div class="data-block">
@@ -1255,7 +1247,6 @@
         }
     }
 
-    // === РАЗДЕЛЕНИЕ ДАННЫХ ПО ПОЛЬЗОВАТЕЛЯМ ===
     let currentUserId = null;
 
     function getCurrentUserId() {
@@ -1337,6 +1328,41 @@
         });
     }
 
+    // НОВАЯ ФОРМУЛА РАСЧЁТА ПРИБЫЛИ
+    function calculateRealProfit() {
+        // Сортируем покупки по дате (FIFO)
+        const buys = deals.filter(d => d.type === 'buy').sort((a, b) => a.date - b.date);
+        const sells = deals.filter(d => d.type === 'sell').sort((a, b) => a.date - b.date);
+        
+        let totalProfit = 0;
+        let buyIndex = 0;
+        let buyRemaining = buys[0] ? buys[0].usdtAmount : 0;
+        let currentBuyPrice = buys[0] ? (buys[0].pricePerUsdt || buys[0].amountPaid / buys[0].usdtAmount) : 0;
+        
+        for (const sell of sells) {
+            let sellAmount = sell.usdtAmount;
+            const sellPrice = sell.pricePerUsdt || sell.amountPaid / sell.usdtAmount;
+            
+            while (sellAmount > 0 && buyIndex < buys.length) {
+                if (buyRemaining === 0) {
+                    buyIndex++;
+                    if (buyIndex >= buys.length) break;
+                    buyRemaining = buys[buyIndex].usdtAmount;
+                    currentBuyPrice = buys[buyIndex].pricePerUsdt || buys[buyIndex].amountPaid / buys[buyIndex].usdtAmount;
+                }
+                
+                const usedAmount = Math.min(sellAmount, buyRemaining);
+                const profit = (sellPrice - currentBuyPrice) * usedAmount;
+                totalProfit += profit;
+                
+                sellAmount -= usedAmount;
+                buyRemaining -= usedAmount;
+            }
+        }
+        
+        return totalProfit;
+    }
+
     function calcAnalytics() {
         const buys = deals.filter(d => d.type === 'buy');
         const sells = deals.filter(d => d.type === 'sell');
@@ -1346,7 +1372,7 @@
         const totalBuyRub = buys.reduce((s,d) => s + d.amountPaid,0);
         const totalSellRub = sells.reduce((s,d) => s + d.amountPaid,0);
         
-        const profitP2P = totalSellRub - totalBuyRub;
+        const realProfit = calculateRealProfit();
         
         document.getElementById('totalBuy').innerText = totalBuyUsdt.toFixed(2);
         document.getElementById('totalSell').innerText = totalSellUsdt.toFixed(2);
@@ -1355,9 +1381,9 @@
         document.getElementById('totalBuyRub').innerHTML = totalBuyRub.toFixed(2) + ' ₽';
         document.getElementById('totalSellRub').innerHTML = totalSellRub.toFixed(2) + ' ₽';
         
-        const profitColor = profitP2P >= 0 ? '#10b981' : '#ef4444';
+        const profitColor = realProfit >= 0 ? '#10b981' : '#ef4444';
         document.getElementById('totalProfitRub').style.color = profitColor;
-        document.getElementById('totalProfitRub').innerHTML = profitP2P.toFixed(2) + ' ₽';
+        document.getElementById('totalProfitRub').innerHTML = realProfit.toFixed(2) + ' ₽';
     }
 
     function isValidDate(dateStr) {
@@ -1383,17 +1409,6 @@
     function renderDealCard(deal) {
         const price = (deal.pricePerUsdt || deal.amountPaid/deal.usdtAmount).toFixed(2);
         const isBuy = deal.type === 'buy';
-        let dealProfit = '';
-        if (!isBuy && currentUsdRate > 0) {
-            const profitByBank = deal.amountPaid - (deal.usdtAmount * currentUsdRate);
-            const profitClass = profitByBank >= 0 ? 'positive' : 'negative';
-            dealProfit = `
-                <div class="profit-row">
-                    <span class="profit-label">📊 Прибыль по курсу ЦБ</span>
-                    <span class="profit-value ${profitClass}">${profitByBank.toFixed(2)} ₽</span>
-                </div>
-            `;
-        }
         return `
             <div class="transaction-card">
                 <div class="transaction-header">
@@ -1414,7 +1429,6 @@
                         <span class="price-label">💰 Ваша цена</span>
                         <span class="price-value">${price} ₽ за 1 USDT</span>
                     </div>
-                    ${dealProfit}
                     ${deal.counterparty ? `
                         <div class="info-row">
                             <span class="info-label">Метод оплаты:</span>
@@ -1563,7 +1577,6 @@
         document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').remove();
     }
 
-    // === КОРРЕКТИРОВКА БАЛАНСА ===
     document.getElementById('balanceAdjustBtn').addEventListener('click', () => {
         const targetBalance = parseFloat(document.getElementById('balanceAdjustInput').value);
         if (isNaN(targetBalance)) {
@@ -1754,7 +1767,6 @@
         }
     });
 
-    // === Модальное окно истории ===
     const historyModal = document.getElementById('historyModal');
     const showAllHistoryBtn = document.getElementById('showAllHistoryBtn');
     const closeHistoryBtn = document.getElementById('closeHistoryBtn');
