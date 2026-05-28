@@ -26,6 +26,53 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== ПРИВЕТСТВЕННОЕ МЕНЮ ===== */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .welcome-overlay.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            padding: 40px 24px;
+            margin: 20px;
+            max-width: 340px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-icon { font-size: 64px; margin-bottom: 20px; }
+        .welcome-title { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px; }
+        .welcome-subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.7); margin-bottom: 24px; line-height: 1.5; }
+        .welcome-features { text-align: left; margin-bottom: 32px; }
+        .feature-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; color: rgba(255, 255, 255, 0.8); font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .feature-icon { font-size: 20px; min-width: 32px; }
+        .welcome-btn { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; padding: 14px 28px; border-radius: 40px; font-weight: 600; font-size: 16px; width: 100%; cursor: pointer; transition: transform 0.2s; }
+        .welcome-btn:active { transform: scale(0.97); }
+        .skip-btn { background: none; border: none; color: rgba(255, 255, 255, 0.5); margin-top: 16px; font-size: 13px; cursor: pointer; }
+
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -452,11 +499,12 @@
             text-decoration: underline;
         }
         
+        /* Кнопки по центру */
         .transaction-footer {
             padding: 8px 14px 12px 14px;
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+            justify-content: center;
+            gap: 16px;
             border-top: 1px solid #f0f2f5;
             transition: border-color 0.3s;
         }
@@ -464,13 +512,13 @@
         .action-btn {
             background: none;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 16px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             transition: 0.2s;
         }
         
@@ -482,6 +530,10 @@
         .action-btn.delete {
             color: #ef4444;
             background: rgba(239,68,68,0.1);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
         }
         
         .search-history {
@@ -631,47 +683,6 @@
         .clear-btn {
             background: rgba(239,68,68,0.3);
             margin-top: 4px;
-        }
-
-        .balance-adjust-section {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-            border-radius: 28px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-        }
-        
-        .balance-adjust-section h3 {
-            font-size: 18px;
-            margin-bottom: 6px;
-        }
-        
-        .balance-adjust-section p {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-bottom: 12px;
-        }
-        
-        .balance-adjust-section input {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            margin-bottom: 12px;
-            padding: 12px;
-            border-radius: 40px;
-            width: 100%;
-            text-align: center;
-            font-size: 18px;
-        }
-        
-        .balance-adjust-section input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-        
-        .adjust-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            margin-top: 0;
         }
 
         .support-chat {
@@ -947,10 +958,6 @@
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
         }
         
-        body.dark .balance-adjust-section {
-            background: linear-gradient(135deg, #5b21b6 0%, #4c1d95 100%);
-        }
-        
         body.dark .support-chat {
             background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
         }
@@ -966,6 +973,23 @@
     </style>
 </head>
 <body>
+<!-- ПРИВЕТСТВЕННОЕ МЕНЮ -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-card">
+        <div class="welcome-icon">📊</div>
+        <div class="welcome-title">P2P Tracker Pro</div>
+        <div class="welcome-subtitle">Умный учёт P2P сделок прямо в Telegram</div>
+        <div class="welcome-features">
+            <div class="feature-item"><span class="feature-icon">📈</span><span>Автоматический расчёт прибыли по каждой сделке</span></div>
+            <div class="feature-item"><span class="feature-icon">💱</span><span>Курсы USD, EUR, CNY в реальном времени</span></div>
+            <div class="feature-item"><span class="feature-icon">📋</span><span>История сделок с поиском</span></div>
+            <div class="feature-item"><span class="feature-icon">📎</span><span>Экспорт и импорт данных (CSV/JSON)</span></div>
+        </div>
+        <button class="welcome-btn" id="startBtn">🚀 Начать учёт</button>
+        <button class="skip-btn" id="skipBtn">Возможно, позже</button>
+    </div>
+</div>
+
 <button class="theme-toggle" id="themeToggle">🌙</button>
 <div class="container">
     <div id="homeTab" class="tab-content active">
@@ -1174,14 +1198,6 @@
                 <button id="clearAllBtn" class="btn clear-btn">🗑️ Очистить все данные</button>
             </div>
 
-            <div class="balance-adjust-section">
-                <div style="font-size: 32px;">⚖️</div>
-                <h3>Корректировка баланса</h3>
-                <p>Установите точный остаток USDT на кошельке</p>
-                <input type="number" id="balanceAdjustInput" placeholder="Введите точный остаток USDT" step="0.01">
-                <button id="balanceAdjustBtn" class="btn adjust-btn">📊 Установить баланс</button>
-            </div>
-
             <div class="support-chat">
                 <div style="font-size: 40px;">🛟</div>
                 <h3>Техподдержка</h3>
@@ -1330,7 +1346,6 @@
 
     // НОВАЯ ФОРМУЛА РАСЧЁТА ПРИБЫЛИ
     function calculateRealProfit() {
-        // Сортируем покупки по дате (FIFO)
         const buys = deals.filter(d => d.type === 'buy').sort((a, b) => a.date - b.date);
         const sells = deals.filter(d => d.type === 'sell').sort((a, b) => a.date - b.date);
         
@@ -1407,7 +1422,8 @@
     }
 
     function renderDealCard(deal) {
-        const price = (deal.pricePerUsdt || deal.amountPaid/deal.usdtAmount).toFixed(2);
+        // Используем сохранённую цену, если она есть
+        const price = deal.pricePerUsdt ? deal.pricePerUsdt.toFixed(2) : (deal.amountPaid / deal.usdtAmount).toFixed(2);
         const isBuy = deal.type === 'buy';
         return `
             <div class="transaction-card">
@@ -1541,6 +1557,7 @@
                     <div class="input-group"><label>Дата сделки (ДД.ММ.ГГ)</label><input type="text" id="editDate" value="${deal.customDate || ''}" placeholder="25.05.26"></div>
                     <div class="input-group"><label>Сумма RUB</label><input type="number" id="editAmount" value="${deal.amountPaid}" step="0.01"></div>
                     <div class="input-group"><label>USDT</label><input type="number" id="editUsdt" value="${deal.usdtAmount}" step="0.01"></div>
+                    <div class="input-group"><label>Цена за 1 USDT</label><input type="number" id="editPrice" value="${deal.pricePerUsdt || (deal.amountPaid/deal.usdtAmount).toFixed(2)}" step="0.01"></div>
                     <div class="input-group"><label>Метод оплаты</label><input type="text" id="editCounterparty" value="${deal.counterparty || ''}"></div>
                     <div class="input-group"><label>Номер сделки</label><input type="text" id="editDealNumber" value="${deal.dealNumber || ''}"></div>
                     <div class="input-group"><label>Ссылка на чек</label><textarea id="editComment" rows="2">${deal.comment || ''}</textarea></div>
@@ -1555,6 +1572,7 @@
             const newDate = document.getElementById('editDate').value;
             const newAmount = parseFloat(document.getElementById('editAmount').value);
             const newUsdt = parseFloat(document.getElementById('editUsdt').value);
+            let newPrice = document.getElementById('editPrice').value;
             const newCounterparty = document.getElementById('editCounterparty').value;
             const newDealNumber = document.getElementById('editDealNumber').value;
             const newComment = document.getElementById('editComment').value;
@@ -1562,11 +1580,18 @@
             if(isNaN(newAmount) || isNaN(newUsdt)) { alert('Введите числа'); return; }
             if(newDate && !isValidDate(newDate)) { alert('Неверный формат даты! Используйте ДД.ММ.ГГ'); return; }
             
+            // Сохраняем введённую цену, если она есть
+            if (newPrice && !isNaN(parseFloat(newPrice)) && parseFloat(newPrice) > 0) {
+                newPrice = parseFloat(newPrice);
+            } else {
+                newPrice = newAmount / newUsdt;
+            }
+            
             updateDeal(id, { 
                 type: newType,
                 amountPaid: newAmount, 
                 usdtAmount: newUsdt, 
-                pricePerUsdt: newAmount/newUsdt, 
+                pricePerUsdt: parseFloat(newPrice.toFixed(2)), 
                 counterparty: newCounterparty, 
                 dealNumber: newDealNumber, 
                 comment: newComment,
@@ -1576,44 +1601,6 @@
         };
         document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').remove();
     }
-
-    document.getElementById('balanceAdjustBtn').addEventListener('click', () => {
-        const targetBalance = parseFloat(document.getElementById('balanceAdjustInput').value);
-        if (isNaN(targetBalance)) {
-            alert('Введите корректное число USDT');
-            return;
-        }
-        
-        const buys = deals.filter(d => d.type === 'buy');
-        const sells = deals.filter(d => d.type === 'sell');
-        const currentBalance = buys.reduce((s,d) => s + d.usdtAmount,0) - sells.reduce((s,d) => s + d.usdtAmount,0);
-        
-        const difference = targetBalance - currentBalance;
-        
-        if (Math.abs(difference) < 0.01) {
-            alert('Баланс уже соответствует указанному значению');
-            return;
-        }
-        
-        const adjustType = difference > 0 ? 'buy' : 'sell';
-        const adjustAmount = Math.abs(difference);
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('ru-RU').split('.').slice(0,2).join('.') + '.' + now.getFullYear().toString().slice(-2);
-        
-        addDeal({
-            type: adjustType,
-            amountPaid: 0,
-            usdtAmount: adjustAmount,
-            pricePerUsdt: 0,
-            counterparty: 'Корректировка баланса',
-            dealNumber: 'Adjust',
-            comment: `Корректировка баланса: ${difference > 0 ? '+' : '-'}${adjustAmount.toFixed(2)} USDT`,
-            customDate: dateStr
-        });
-        
-        document.getElementById('balanceAdjustInput').value = '';
-        alert(`Баланс скорректирован на ${difference > 0 ? '+' : '-'}${adjustAmount.toFixed(2)} USDT`);
-    });
 
     function exportCSV() {
         let csv = "\uFEFFТип;Дата;Сумма(RUB);USDT;Цена;Метод оплаты;Номер сделки;Ссылка на чек\n";
@@ -1703,8 +1690,13 @@
         }
         
         if(isNaN(amountPaid) || isNaN(usdtAmount)) { alert('Заполните поля суммы и количества USDT'); return; }
-        if(pricePerUsdt && !isNaN(parseFloat(pricePerUsdt))) pricePerUsdt = parseFloat(pricePerUsdt);
-        else pricePerUsdt = amountPaid / usdtAmount;
+        
+        // Сохраняем введённую цену, если она есть
+        if (pricePerUsdt && !isNaN(parseFloat(pricePerUsdt)) && parseFloat(pricePerUsdt) > 0) {
+            pricePerUsdt = parseFloat(pricePerUsdt);
+        } else {
+            pricePerUsdt = amountPaid / usdtAmount;
+        }
         
         addDeal({ 
             type, 
@@ -1717,6 +1709,7 @@
             customDate: dealDate
         });
         document.getElementById('dealForm').reset();
+        switchTab('home');
     });
 
     document.getElementById('calcBtn').onclick = () => {
@@ -1826,6 +1819,21 @@
         themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
     };
     themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+
+    // ===== ПРИВЕТСТВЕННОЕ МЕНЮ =====
+    if (!localStorage.getItem('welcome_shown')) {
+        document.getElementById('welcomeOverlay').classList.remove('hide');
+    } else {
+        document.getElementById('welcomeOverlay').classList.add('hide');
+    }
+    document.getElementById('startBtn').onclick = () => {
+        localStorage.setItem('welcome_shown', 'true');
+        document.getElementById('welcomeOverlay').classList.add('hide');
+    };
+    document.getElementById('skipBtn').onclick = () => {
+        localStorage.setItem('welcome_shown', 'true');
+        document.getElementById('welcomeOverlay').classList.add('hide');
+    };
 
     if(window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
 
