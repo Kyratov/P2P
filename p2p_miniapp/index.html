@@ -419,11 +419,23 @@
             font-size: 11px;
             transition: background 0.3s, color 0.3s;
             flex-wrap: wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
         }
         
         .info-label {
             font-weight: 500;
             color: #64748b;
+        }
+        
+        .info-row a {
+            color: #3b82f6;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .info-row a:hover {
+            text-decoration: underline;
         }
         
         .transaction-footer {
@@ -819,6 +831,10 @@
         
         body.dark .info-label {
             color: #94a3b8;
+        }
+        
+        body.dark .info-row a {
+            color: #60a5fa;
         }
         
         body.dark .tabs {
@@ -1381,7 +1397,7 @@
                         ${deal.comment ? `
                             <div class="info-row">
                                 <span class="info-label">Ссылка на чек:</span>
-                                <span>${deal.comment}</span>
+                                <a href="${deal.comment}" target="_blank" rel="noopener noreferrer">${deal.comment.length > 50 ? deal.comment.substring(0, 47) + '...' : deal.comment}</a>
                             </div>
                         ` : ''}
                     </div>
