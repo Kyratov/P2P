@@ -631,6 +631,48 @@
             margin-top: 4px;
         }
 
+        /* Корректировка баланса */
+        .balance-adjust-section {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            border-radius: 28px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .balance-adjust-section h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+        
+        .balance-adjust-section p {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .balance-adjust-section input {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .balance-adjust-section input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .adjust-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 0;
+        }
+
         .support-chat {
             background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             border-radius: 28px;
@@ -906,6 +948,10 @@
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
         }
         
+        body.dark .balance-adjust-section {
+            background: linear-gradient(135deg, #5b21b6 0%, #4c1d95 100%);
+        }
+        
         body.dark .support-chat {
             background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
         }
@@ -1112,7 +1158,7 @@
         </div>
     </div>
 
-    <!-- Поддержка + Экспорт + Импорт -->
+    <!-- Поддержка + Экспорт + Импорт + Корректировка баланса -->
     <div id="supportTab" class="tab-content">
         <div class="support-blocks">
             <div class="data-block">
@@ -1132,6 +1178,15 @@
                 <input type="file" id="importFile" accept=".csv">
                 <button id="importBtn" class="btn">📥 Импортировать</button>
                 <button id="clearAllBtn" class="btn clear-btn">🗑️ Очистить все данные</button>
+            </div>
+
+            <!-- Корректировка баланса -->
+            <div class="balance-adjust-section">
+                <div style="font-size: 32px;">⚖️</div>
+                <h3>Корректировка баланса</h3>
+                <p>Установите точный остаток USDT на кошельке</p>
+                <input type="number" id="balanceAdjustInput" placeholder="Введите точный остаток USDT" step="0.01">
+                <button id="balanceAdjustBtn" class="btn adjust-btn">📊 Установить баланс</button>
             </div>
 
             <div class="support-chat">
@@ -1479,6 +1534,46 @@
         };
         document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').remove();
     }
+
+    // === КОРРЕКТИРОВКА БАЛАНСА ===
+    document.getElementById('balanceAdjustBtn').addEventListener('click', () => {
+        const targetBalance = parseFloat(document.getElementById('balanceAdjustInput').value);
+        if (isNaN(targetBalance)) {
+            alert('Введите корректное число USDT');
+            return;
+        }
+        
+        const buys = deals.filter(d => d.type === 'buy');
+        const sells = deals.filter(d => d.type === 'sell');
+        const currentBalance = buys.reduce((s,d) => s + d.usdtAmount,0) - sells.reduce((s,d) => s + d.usdtAmount,0);
+        
+        const difference = targetBalance - currentBalance;
+        
+        if (Math.abs(difference) < 0.01) {
+            alert('Баланс уже соответствует указанному значению');
+            return;
+        }
+        
+        // Добавляем корректировочную сделку
+        const adjustType = difference > 0 ? 'buy' : 'sell';
+        const adjustAmount = Math.abs(difference);
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ru-RU').split('.').slice(0,2).join('.') + '.' + now.getFullYear().toString().slice(-2);
+        
+        addDeal({
+            type: adjustType,
+            amountPaid: 0,
+            usdtAmount: adjustAmount,
+            pricePerUsdt: 0,
+            counterparty: 'Корректировка баланса',
+            dealNumber: 'Adjust',
+            comment: `Корректировка баланса: ${difference > 0 ? '+' : '-'}${adjustAmount} USDT`,
+            customDate: dateStr
+        });
+        
+        document.getElementById('balanceAdjustInput').value = '';
+        alert(`Баланс скорректирован на ${difference > 0 ? '+' : '-'}${adjustAmount.toFixed(2)} USDT`);
+    });
 
     function exportCSV() {
         let csv = "\uFEFFТип;Дата;Сумма(RUB);USDT;Цена;Метод оплаты;Номер сделки;Ссылка на чек\n";
