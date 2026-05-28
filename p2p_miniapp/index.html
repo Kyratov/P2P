@@ -313,15 +313,24 @@
             transform: scale(0.97);
         }
 
-        .btn-secondary {
+        /* ===== КРУГЛЫЕ КНОПКИ ПО ЦЕНТРУ ===== */
+        .center-btn {
+            display: block;
+            width: 100%;
             background: #f1f5f9;
             color: #1e293b;
-            margin-top: 12px;
-            box-shadow: none;
             border: 1px solid #d1d5db;
+            padding: 14px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
         }
-        
-        body.dark .btn-secondary {
+        .center-btn:active { transform: scale(0.97); }
+        body.dark .center-btn {
             background: #334155;
             color: #f1f5f9;
             border-color: #475569;
@@ -589,7 +598,8 @@
             font-size: 14px;
         }
 
-        .support-chat {
+        /* Техподдержка — такого же стиля как верхние окна */
+        .support-card {
             background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             border-radius: 28px;
             padding: 20px;
@@ -597,19 +607,16 @@
             color: white;
             border: 1px solid #2563eb;
         }
-
-        .support-chat h3 {
+        .support-card h3 {
             font-size: 18px;
             margin-bottom: 8px;
         }
-
-        .support-chat p {
+        .support-card p {
             font-size: 13px;
             opacity: 0.9;
             margin-bottom: 16px;
         }
-
-        .support-chat .btn {
+        .support-card .btn {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.3);
@@ -699,6 +706,39 @@
             pointer-events: none;
             color: #fbbf24;
         }
+
+        /* Гид по приложению */
+        .guide-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .guide-modal.hide { display: none; }
+        .guide-card {
+            background: white;
+            border-radius: 32px;
+            padding: 28px;
+            max-width: 320px;
+            text-align: center;
+        }
+        body.dark .guide-card {
+            background: #1e293b;
+            color: white;
+        }
+        .guide-step-icon { font-size: 48px; margin-bottom: 16px; }
+        .guide-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .guide-text { font-size: 14px; opacity: 0.8; margin-bottom: 20px; line-height: 1.4; }
+        .guide-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .guide-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; transition: 0.2s; }
+        .guide-dot.active { background: #3b82f6; width: 20px; border-radius: 4px; }
+        .guide-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; }
 
         body.dark {
             background: #0f172a;
@@ -837,11 +877,6 @@
             border-color: #3b0764;
         }
         
-        body.dark .support-chat {
-            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-            border-color: #1e3a8a;
-        }
-        
         body.dark .empty-state {
             color: #64748b;
         }
@@ -872,7 +907,22 @@
             color: #60a5fa;
         }
         
-        body.dark .btn-secondary {
+        body.dark .support-card {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border-color: #1e3a8a;
+        }
+        
+        body.dark .guide-card {
+            background: #1e293b;
+            color: white;
+        }
+        body.dark .guide-dot {
+            background: #475569;
+        }
+        body.dark .guide-dot.active {
+            background: #60a5fa;
+        }
+        body.dark .center-btn {
             background: #334155;
             color: #f1f5f9;
             border-color: #475569;
@@ -894,6 +944,17 @@
         </div>
         <button class="welcome-btn" id="startBtn">🚀 Начать учёт</button>
         <button class="skip-btn" id="skipBtn">Возможно, позже</button>
+    </div>
+</div>
+
+<!-- ГИД ПО ПРИЛОЖЕНИЮ -->
+<div id="guideModal" class="guide-modal" style="display: none;">
+    <div class="guide-card">
+        <div class="guide-step-icon" id="guideIcon">📊</div>
+        <div class="guide-title" id="guideTitle">Добро пожаловать!</div>
+        <div class="guide-text" id="guideText">P2P Tracker Pro поможет вам отслеживать сделки и прибыль</div>
+        <div class="guide-dots" id="guideDots"></div>
+        <button id="guideNextBtn" class="guide-btn">Далее →</button>
     </div>
 </div>
 
@@ -937,7 +998,7 @@
                 <div class="deal-stat-chip"><div class="label">🔴 Продаж</div><div class="value" id="totalSellsCount">0</div></div>
             </div>
             <div id="recentDealsList"></div>
-            <button id="showAllHistoryBtn" class="btn-secondary">📋 Показать всю историю сделок</button>
+            <button id="showAllHistoryBtn" class="center-btn">📋 Показать всю историю сделок</button>
         </div>
     </div>
 
@@ -996,14 +1057,19 @@
         </div>
     </div>
 
-    <!-- Прочее (PDF экспорт) -->
+    <!-- Прочее (PDF экспорт + гид) -->
     <div id="supportTab" class="tab-content">
         <div class="card">
             <h2>📎 Экспорт в PDF</h2>
             <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Скачайте отчёт по всем сделкам</p>
             <button id="exportPdfBtn" class="btn">📄 Скачать PDF</button>
         </div>
-        <div class="support-chat">
+        <div class="card">
+            <h2>📖 Гид по приложению</h2>
+            <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Узнайте как пользоваться приложением</p>
+            <button id="openGuideBtn" class="center-btn">🚀 Открыть гид</button>
+        </div>
+        <div class="support-card">
             <div style="font-size: 40px;">🛟</div>
             <h3>Техподдержка</h3>
             <p>Напишите нам, если нашли баг или есть идеи!</p>
@@ -1022,6 +1088,54 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+    // ===== ГИД ПО ПРИЛОЖЕНИЮ =====
+    const guideSteps = [
+        { icon: '📊', title: 'Добро пожаловать!', text: 'P2P Tracker Pro поможет вам отслеживать сделки и прибыль' },
+        { icon: '➕', title: 'Добавление сделок', text: 'Нажмите "Создать" и заполните данные о покупке/продаже USDT' },
+        { icon: '🔍', title: 'Поиск и фильтры', text: 'В истории сделок можно искать по контрагенту или комментарию' },
+        { icon: '📎', title: 'Экспорт в PDF', text: 'В разделе "Прочее" можно скачать отчёт по всем сделкам' }
+    ];
+    let currentGuideStep = 0;
+    
+    function showGuide() {
+        currentGuideStep = 0;
+        updateGuideStep();
+        document.getElementById('guideModal').style.display = 'flex';
+    }
+    
+    function updateGuideStep() {
+        const step = guideSteps[currentGuideStep];
+        document.getElementById('guideIcon').textContent = step.icon;
+        document.getElementById('guideTitle').textContent = step.title;
+        document.getElementById('guideText').textContent = step.text;
+        
+        const dotsContainer = document.getElementById('guideDots');
+        dotsContainer.innerHTML = '';
+        guideSteps.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'guide-dot' + (i === currentGuideStep ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        });
+        
+        const nextBtn = document.getElementById('guideNextBtn');
+        if(currentGuideStep === guideSteps.length - 1) {
+            nextBtn.textContent = '✅ Завершить';
+        } else {
+            nextBtn.textContent = 'Далее →';
+        }
+    }
+    
+    document.getElementById('guideNextBtn').onclick = () => {
+        if(currentGuideStep < guideSteps.length - 1) {
+            currentGuideStep++;
+            updateGuideStep();
+        } else {
+            document.getElementById('guideModal').style.display = 'none';
+        }
+    };
+    
+    document.getElementById('openGuideBtn').onclick = () => showGuide();
+
     // ===== ДАННЫЕ =====
     let deals = [];
     let historyFilter = 'all';
