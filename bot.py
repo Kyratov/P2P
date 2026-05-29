@@ -6,7 +6,7 @@ from aiogram.filters import Command
 
 # === КОНФИГУРАЦИЯ ===
 BOT_TOKEN = "8824407853:AAHq_BcojLt6FnzKdLgdd6LnuGySb6M2His"  # Замени на свой токен
-WEBAPP_URL = "https://p2-p-sand.vercel.app/"  # URL твоего Mini App
+WEBAPP_URL = "https://kyratov.github.io/P2P/"  # URL твоего Mini App
 
 # === ИНИЦИАЛИЗАЦИЯ ===
 bot = Bot(token=BOT_TOKEN)
