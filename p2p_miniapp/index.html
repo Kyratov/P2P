@@ -394,41 +394,46 @@
             transition: color 0.3s;
         }
         
-        /* Поля для последних операций */
-        .deal-meta-row {
+        /* Информационные строки - единый стиль для метода оплаты, маржи и цены */
+        .info-row {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            margin-bottom: 12px;
+            align-items: flex-start;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 5px 8px;
+            background: #f8fafc;
+            border-radius: 14px;
+            font-size: 11px;
+            transition: background 0.3s, color 0.3s;
+            flex-wrap: wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
         }
-        .deal-meta-chip {
-            flex: 1;
-            background: #f1f5f9;
-            border-radius: 24px;
-            padding: 8px 12px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-        body.dark .deal-meta-chip {
-            background: #334155;
-            border-color: #475569;
-        }
-        .deal-meta-chip .label {
-            font-size: 10px;
+        
+        .info-label {
+            font-weight: 500;
             color: #64748b;
         }
-        body.dark .deal-meta-chip .label {
-            color: #94a3b8;
+        
+        .info-row a {
+            color: #3b82f6;
+            text-decoration: none;
+            word-break: break-all;
         }
-        .deal-meta-chip .value {
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 4px;
+        
+        .info-row a:hover {
+            text-decoration: underline;
         }
-        .deal-meta-chip .value.positive {
+        
+        .info-value {
+            font-weight: 600;
+        }
+        
+        .info-value.positive {
             color: #10b981;
         }
-        .deal-meta-chip .value.negative {
+        
+        .info-value.negative {
             color: #ef4444;
         }
         
@@ -529,36 +534,6 @@
             transition: color 0.3s;
         }
         
-        .info-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-            margin-top: 8px;
-            padding: 5px 8px;
-            background: #f8fafc;
-            border-radius: 14px;
-            font-size: 11px;
-            transition: background 0.3s, color 0.3s;
-            flex-wrap: wrap;
-            word-break: break-all;
-            overflow-wrap: break-word;
-        }
-        
-        .info-label {
-            font-weight: 500;
-            color: #64748b;
-        }
-        
-        .info-row a {
-            color: #3b82f6;
-            text-decoration: none;
-            word-break: break-all;
-        }
-        
-        .info-row a:hover {
-            text-decoration: underline;
-        }
-        
         .transaction-footer {
             padding: 8px 14px 12px 14px;
             display: flex;
@@ -651,31 +626,6 @@
             margin-top: 16px;
             font-weight: 600;
             font-size: 14px;
-        }
-
-        .support-card {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            border-radius: 28px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            border: 1px solid #2563eb;
-        }
-        .support-card h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        .support-card p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 16px;
-        }
-        .support-card .btn {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            box-shadow: none;
         }
 
         .empty-state {
@@ -1031,11 +981,6 @@
             color: #60a5fa;
         }
         
-        body.dark .support-card {
-            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-            border-color: #1e3a8a;
-        }
-        
         body.dark .center-btn {
             background: linear-gradient(135deg, #334155, #1e293b);
             color: #f1f5f9;
@@ -1121,7 +1066,7 @@
                 <div class="deal-stat-chip"><div class="label">🔴 Продаж</div><div class="value" id="totalSellsCount">0</div></div>
             </div>
             <div id="recentDealsList"></div>
-            <button id="showAllHistoryBtn" class="center-btn">📋 Показать всю историю сделок</button>
+            <button id="showAllHistoryBtn" class="center-btn">Показать всю историю сделок</button>
         </div>
     </div>
 
@@ -1180,24 +1125,28 @@
         </div>
     </div>
 
-    <!-- Прочее (PDF экспорт + гид) -->
+    <!-- Прочее (PDF экспорт + гид + техподдержка) -->
     <div id="supportTab" class="tab-content">
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="font-size: 32px;">🛟</div>
+                <h2 style="margin-bottom: 0;">Техподдержка</h2>
+            </div>
+            <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Напишите нам, если нашли баг или есть идеи!</p>
+            <button id="supportBtn" class="btn">📩 Открыть чат</button>
+            <p style="margin-top: 16px; font-size: 11px; opacity: 0.7; text-align: center;">tg: @KyratovVD</p>
+        </div>
+        
         <div class="card">
             <h2>📎 Экспорт в PDF</h2>
             <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Скачайте отчёт по всем сделкам</p>
             <button id="exportPdfBtn" class="btn">📄 Скачать PDF</button>
         </div>
+        
         <div class="card">
             <h2>📖 Гид по приложению</h2>
             <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Узнайте как пользоваться приложением</p>
-            <button id="openGuideBtn" class="center-btn guide-open-btn">🚀 Открыть гид</button>
-        </div>
-        <div class="support-card">
-            <div style="font-size: 40px;">🛟</div>
-            <h3>Техподдержка</h3>
-            <p>Напишите нам, если нашли баг или есть идеи!</p>
-            <button id="supportBtn" class="btn">📩 Открыть чат</button>
-            <p style="margin-top: 16px; font-size: 11px; opacity: 0.7;">tg: @KyratovVD</p>
+            <button id="openGuideBtn" class="btn guide-open-btn">🚀 Открыть гид</button>
         </div>
     </div>
 </div>
@@ -1381,42 +1330,85 @@
     function isValidDate(str) { return /^(\d{2})\.(\d{2})\.(\d{2})$/.test(str); }
     function formatDate(ts) { return new Date(ts).toLocaleDateString('ru-RU', { day:'numeric', month:'short' }); }
 
-    function calculateMargin(deal) {
+    // ПРОСТАЯ МАРЖА: (Цена продажи − Последняя цена покупки) × Количество USDT
+    function calculateSimpleMargin(deal) {
+        // Если это покупка — не показываем маржу
         if (deal.type === 'buy') return null;
-        const buys = deals.filter(d => d.type === 'buy').sort((a,b) => a.date - b.date);
-        let remaining = deal.usdtAmount;
-        let totalCost = 0;
-        for (const buy of buys) {
-            if (remaining <= 0) break;
-            const used = Math.min(remaining, buy.usdtAmount);
-            const buyPrice = buy.pricePerUsdt || (buy.amountPaid / buy.usdtAmount);
-            totalCost += used * buyPrice;
-            remaining -= used;
-        }
+        
+        // Находим последнюю покупку (самую новую по дате)
+        const buys = deals.filter(d => d.type === 'buy').sort((a,b) => b.date - a.date);
+        if (buys.length === 0) return null;
+        
+        const lastBuy = buys[0];
+        const lastBuyPrice = lastBuy.pricePerUsdt || (lastBuy.amountPaid / lastBuy.usdtAmount);
         const sellPrice = deal.pricePerUsdt || (deal.amountPaid / deal.usdtAmount);
-        const revenue = deal.usdtAmount * sellPrice;
-        const marginRub = revenue - totalCost;
+        
+        // Маржа = (Цена продажи − Цена последней покупки) × Количество USDT
+        const marginRub = (sellPrice - lastBuyPrice) * deal.usdtAmount;
         return marginRub;
     }
 
     function renderDealCard(deal, showMeta = true) {
         const price = deal.pricePerUsdt ? deal.pricePerUsdt.toFixed(2) : (deal.amountPaid / deal.usdtAmount).toFixed(2);
         const isBuy = deal.type === 'buy';
-        const margin = !isBuy ? calculateMargin(deal) : null;
+        const margin = !isBuy ? calculateSimpleMargin(deal) : null;
         const marginFormatted = margin !== null ? (margin >= 0 ? `+${margin.toFixed(2)} ₽` : `${margin.toFixed(2)} ₽`) : null;
+        const marginClass = margin !== null ? (margin >= 0 ? 'positive' : 'negative') : '';
         
-        let metaHtml = '';
-        if (showMeta) {
-            metaHtml = `
-                <div class="deal-meta-row">
-                    <div class="deal-meta-chip">
-                        <div class="label">💰 Маржа</div>
-                        <div class="value ${margin !== null ? (margin >= 0 ? 'positive' : 'negative') : ''}">${margin !== null ? marginFormatted : '—'}</div>
-                    </div>
-                    <div class="deal-meta-chip">
-                        <div class="label">💵 Цена за 1 USDT</div>
-                        <div class="value">${price} ₽</div>
-                    </div>
+        // Все информационные строки теперь в едином стиле info-row
+        let extraInfoHtml = '';
+        
+        // Цена за 1 USDT - теперь как info-row
+        extraInfoHtml += `
+            <div class="info-row">
+                <span class="info-label">💵 Цена за 1 USDT:</span>
+                <span class="info-value">${price} ₽</span>
+            </div>
+        `;
+        
+        // Маржа для продаж - как info-row
+        if (!isBuy && margin !== null) {
+            extraInfoHtml += `
+                <div class="info-row">
+                    <span class="info-label">💰 Маржа:</span>
+                    <span class="info-value ${marginClass}">${marginFormatted}</span>
+                </div>
+            `;
+        } else if (!isBuy && margin === null) {
+            extraInfoHtml += `
+                <div class="info-row">
+                    <span class="info-label">💰 Маржа:</span>
+                    <span class="info-value">— (нет покупок)</span>
+                </div>
+            `;
+        }
+        
+        // Метод оплаты
+        if (deal.counterparty) {
+            extraInfoHtml += `
+                <div class="info-row">
+                    <span class="info-label">💳 Метод оплаты:</span>
+                    <span class="info-value">${deal.counterparty}</span>
+                </div>
+            `;
+        }
+        
+        // Номер сделки
+        if (deal.dealNumber) {
+            extraInfoHtml += `
+                <div class="info-row">
+                    <span class="info-label">🔢 Номер сделки:</span>
+                    <span class="info-value">${deal.dealNumber}</span>
+                </div>
+            `;
+        }
+        
+        // Ссылка на чек
+        if (deal.comment) {
+            extraInfoHtml += `
+                <div class="info-row">
+                    <span class="info-label">📎 Ссылка на чек:</span>
+                    <a href="${deal.comment}" target="_blank" class="info-value">${deal.comment.length > 50 ? deal.comment.substring(0,47)+'...' : deal.comment}</a>
                 </div>
             `;
         }
@@ -1430,11 +1422,11 @@
                 <div class="transaction-date">${deal.customDate || formatDate(deal.date)}</div>
             </div>
             <div class="transaction-body">
-                <div class="amount-row"><span class="rub-amount">${deal.amountPaid.toLocaleString()} ₽</span><span class="usdt-amount">${deal.usdtAmount.toFixed(2)} USDT</span></div>
-                ${metaHtml}
-                ${deal.counterparty ? `<div class="info-row"><span class="info-label">Метод оплаты:</span><span>${deal.counterparty}</span></div>` : ''}
-                ${deal.dealNumber ? `<div class="info-row"><span class="info-label">Номер сделки:</span><span>${deal.dealNumber}</span></div>` : ''}
-                ${deal.comment ? `<div class="info-row"><span class="info-label">Ссылка на чек:</span><a href="${deal.comment}" target="_blank">${deal.comment.length > 50 ? deal.comment.substring(0,47)+'...' : deal.comment}</a></div>` : ''}
+                <div class="amount-row">
+                    <span class="rub-amount">${deal.amountPaid.toLocaleString()} ₽</span>
+                    <span class="usdt-amount">${deal.usdtAmount.toFixed(2)} USDT</span>
+                </div>
+                ${extraInfoHtml}
             </div>
             <div class="transaction-footer">
                 <button class="action-btn edit" data-id="${deal.id}">✏️ Редактировать</button>
@@ -1470,12 +1462,11 @@
 
     function renderAll() { calcAnalytics(); renderRecent(); }
 
-    // НОРМАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ - полноценное как создание сделки
+    // ОКНО РЕДАКТИРОВАНИЯ
     function openEditModal(id) {
         const deal = deals.find(d => d.id === id);
         if(!deal) return;
         
-        // Создаём модальное окно с формой, идентичной форме создания
         const modalHtml = `
             <div class="modal" id="editModal">
                 <div class="modal-content">
@@ -1525,7 +1516,6 @@
         
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         
-        // Обработчик сохранения
         document.getElementById('saveEditBtn').onclick = () => {
             const newType = document.getElementById('editType').value;
             const newDate = document.getElementById('editDate').value;
@@ -1560,12 +1550,10 @@
             document.getElementById('editModal').remove();
         };
         
-        // Обработчик отмены
         document.getElementById('cancelEditBtn').onclick = () => {
             document.getElementById('editModal').remove();
         };
         
-        // Закрытие по клику на фон
         const modal = document.getElementById('editModal');
         modal.onclick = (e) => {
             if (e.target === modal) {
