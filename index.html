@@ -1074,7 +1074,6 @@
         
         <div class="card">
             <h2>📥 Импорт из Telegram Wallet</h2>
-            <p style="margin-bottom: 12px; font-size: 13px; color: #64748b;">Загрузите файл экспорта из Telegram Wallet (.xlsx)</p>
             <input type="file" id="telegramImportFile" class="file-input" accept=".xlsx, .xls">
             <div class="flex-buttons">
                 <button id="importReplaceBtn" class="btn btn-danger">📥 Заменить всё</button>
@@ -1084,7 +1083,6 @@
         
         <div class="card">
             <h2>📖 Гид по приложению</h2>
-            <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Узнайте как пользоваться приложением</p>
             <button id="openGuideBtn" class="btn guide-open-btn">🚀 Открыть гид</button>
         </div>
     </div>
@@ -1525,109 +1523,108 @@
     }
 
     // ===== ИМПОРТ ИЗ TELEGRAM WALLET =====
-    function importFromTelegramWallet(replaceMode) {
-        const fileInput = document.getElementById('telegramImportFile');
-        if (!fileInput.files || fileInput.files.length === 0) {
-            alert('Выберите Excel-файл из Telegram Wallet');
+function importFromTelegramWallet(replaceMode) {
+    const fileInput = document.getElementById('telegramImportFile');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Выберите Excel-файл из Telegram Wallet');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+        
+        if (!rows || rows.length < 2) {
+            alert('Файл пуст или не содержит данных');
             return;
         }
         
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
-            
-            if (!rows || rows.length < 2) {
-                alert('Файл пуст или не содержит данных');
-                return;
-            }
-            
-            const headers = rows[0].map(cell => String(cell || '').toLowerCase().trim());
-            const colIndex = {
-                adType: headers.findIndex(h => h.includes('ad type')),
-                role: headers.findIndex(h => h.includes('role')),
-                orderNumber: headers.findIndex(h => h.includes('order number')),
-                netCrypto: headers.findIndex(h => h.includes('net crypto amount')),
-                fiatAmount: headers.findIndex(h => h.includes('fiat amount')),
-                paymentMethod: headers.findIndex(h => h.includes('payment method')),
-                completionTime: headers.findIndex(h => h.includes('completion time'))
-            };
-            
-            function parseDateFromISO(iso) {
-                if (!iso) return '';
-                const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
-                if (match) return `${match[3]}.${match[2]}.${match[1].slice(-2)}`;
-                return '';
-            }
-            
-            const newDeals = [];
-            
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || row.length === 0) continue;
-                
-                let adType = colIndex.adType >= 0 ? String(row[colIndex.adType] || '').toUpperCase() : '';
-                let role = colIndex.role >= 0 ? String(row[colIndex.role] || '').toUpperCase() : '';
-                
-                let type = null;
-                if (adType === 'SALE' && role === 'SELLER') type = 'sell';
-                else if (adType === 'PURCHASE' && role === 'BUYER') type = 'buy';
-                else if (adType === 'SALE' && role === 'BUYER') type = 'buy';
-                else if (adType === 'PURCHASE' && role === 'SELLER') type = 'sell';
-                
-                if (!type) continue;
-                
-                let usdtAmount = colIndex.netCrypto >= 0 ? parseFloat(row[colIndex.netCrypto]) : 0;
-                let amountPaid = colIndex.fiatAmount >= 0 ? parseFloat(row[colIndex.fiatAmount]) : 0;
-                let counterparty = colIndex.paymentMethod >= 0 ? String(row[colIndex.paymentMethod] || '') : '';
-                counterparty = counterparty.replace(' (ex. Tinkoff)', '').replace(' (ex. ', '').replace(')', '');
-                let dealNumber = colIndex.orderNumber >= 0 ? String(row[colIndex.orderNumber] || '') : '';
-                let pricePerUsdt = usdtAmount > 0 ? amountPaid / usdtAmount : 0;
-                let completionRaw = colIndex.completionTime >= 0 ? String(row[colIndex.completionTime] || '') : '';
-                let customDate = parseDateFromISO(completionRaw);
-                
-                if (isNaN(usdtAmount) || isNaN(amountPaid) || usdtAmount <= 0 || amountPaid <= 0) continue;
-                
-                newDeals.push({
-                    type: type,
-                    amountPaid: amountPaid,
-                    usdtAmount: usdtAmount,
-                    pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)),
-                    counterparty: counterparty,
-                    dealNumber: dealNumber,
-                    comment: '',
-                    customDate: customDate,
-                    id: Date.now() + Math.random() + i,
-                    date: Date.now()
-                });
-            }
-            
-            if (newDeals.length === 0) {
-                alert('Не удалось распознать сделки. Проверьте формат файла.');
-                return;
-            }
-            
-            if (replaceMode) {
-                deals = [];
-            }
-            
-            for (const deal of newDeals) {
-                deals.unshift(deal);
-            }
-            
-            saveData();
-            renderAll();
-            alert(`✅ Импортировано ${newDeals.length} сделок!`);
-            fileInput.value = '';
+        const headers = rows[0].map(cell => String(cell || '').toLowerCase().trim());
+        const colIndex = {
+            adType: headers.findIndex(h => h.includes('ad type')),
+            role: headers.findIndex(h => h.includes('role')),
+            orderNumber: headers.findIndex(h => h.includes('order number')),
+            netCrypto: headers.findIndex(h => h.includes('net crypto amount')),
+            fiatAmount: headers.findIndex(h => h.includes('fiat amount')),
+            paymentMethod: headers.findIndex(h => h.includes('payment method')),
+            completionTime: headers.findIndex(h => h.includes('completion time'))
         };
         
-        reader.readAsArrayBuffer(file);
-    }
-
+        function parseDateFromISO(iso) {
+            if (!iso) return '';
+            const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (match) return `${match[3]}.${match[2]}.${match[1].slice(-2)}`;
+            return '';
+        }
+        
+        const newDeals = [];
+        
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row || row.length === 0) continue;
+            
+            let adType = colIndex.adType >= 0 ? String(row[colIndex.adType] || '').toUpperCase() : '';
+            let role = colIndex.role >= 0 ? String(row[colIndex.role] || '').toUpperCase() : '';
+            
+            let type = null;
+            if (adType === 'SALE' && role === 'SELLER') type = 'sell';
+            else if (adType === 'PURCHASE' && role === 'BUYER') type = 'buy';
+            else if (adType === 'SALE' && role === 'BUYER') type = 'buy';
+            else if (adType === 'PURCHASE' && role === 'SELLER') type = 'sell';
+            
+            if (!type) continue;
+            
+            let usdtAmount = colIndex.netCrypto >= 0 ? parseFloat(row[colIndex.netCrypto]) : 0;
+            let amountPaid = colIndex.fiatAmount >= 0 ? parseFloat(row[colIndex.fiatAmount]) : 0;
+            let counterparty = colIndex.paymentMethod >= 0 ? String(row[colIndex.paymentMethod] || '') : '';
+            counterparty = counterparty.replace(' (ex. Tinkoff)', '').replace(' (ex. ', '').replace(')', '');
+            let dealNumber = colIndex.orderNumber >= 0 ? String(row[colIndex.orderNumber] || '') : '';
+            let pricePerUsdt = usdtAmount > 0 ? amountPaid / usdtAmount : 0;
+            let completionRaw = colIndex.completionTime >= 0 ? String(row[colIndex.completionTime] || '') : '';
+            let customDate = parseDateFromISO(completionRaw);
+            
+            if (isNaN(usdtAmount) || isNaN(amountPaid) || usdtAmount <= 0 || amountPaid <= 0) continue;
+            
+            newDeals.push({
+                type: type,
+                amountPaid: amountPaid,
+                usdtAmount: usdtAmount,
+                pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)),
+                counterparty: counterparty,
+                dealNumber: dealNumber,
+                comment: '',
+                customDate: customDate
+            });
+        }
+        
+        if (newDeals.length === 0) {
+            alert('Не удалось распознать сделки. Проверьте формат файла.');
+            return;
+        }
+        
+        if (replaceMode) {
+            // Очищаем через deleteDeal, чтобы корректно обновить UI
+            while(deals.length) {
+                deleteDeal(deals[0].id);
+            }
+        }
+        
+        // Добавляем через addDeal — теперь импортированные сделки будут редактироваться!
+        for (const deal of newDeals) {
+            addDeal(deal);
+        }
+        
+        alert(`✅ Импортировано ${newDeals.length} сделок!`);
+        fileInput.value = '';
+    };
+    
+    reader.readAsArrayBuffer(file);
+}
     // ===== ОБРАБОТЧИКИ =====
     document.getElementById('dealForm').onsubmit = (e) => {
         e.preventDefault();
