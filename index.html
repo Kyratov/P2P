@@ -941,6 +941,10 @@
             border-color: #334155;
             color: #f1f5f9;
         }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -1082,6 +1086,11 @@
         </div>
         
         <div class="card">
+            <h2>⚠️ Очистить данные</h2>
+            <button id="clearAllDataBtn" class="btn btn-danger" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🗑️ Удалить все сделки</button>
+        </div>
+        
+        <div class="card">
             <h2>📖 Гид по приложению</h2>
             <button id="openGuideBtn" class="btn guide-open-btn">🚀 Открыть гид</button>
         </div>
@@ -1207,9 +1216,41 @@
     }
     function saveData() { localStorage.setItem(getStorageKey(), JSON.stringify(deals)); }
 
-    function addDeal(deal) { deal.id = Date.now(); deal.date = Date.now(); deals.unshift(deal); saveData(); renderAll(); updateStats(); }
-    function updateDeal(id, updated) { const i = deals.findIndex(d => d.id === id); if(i !== -1) { deals[i] = {...deals[i], ...updated, id}; saveData(); renderAll(); updateStats(); } }
-    function deleteDeal(id) { deals = deals.filter(d => d.id !== id); saveData(); renderAll(); updateStats(); }
+    function addDeal(deal) { 
+        deal.id = Date.now() + Math.random(); 
+        deal.date = Date.now(); 
+        deals.unshift(deal); 
+        saveData(); 
+        renderAll(); 
+        updateStats(); 
+    }
+    
+    function updateDeal(id, updated) { 
+        const i = deals.findIndex(d => d.id == id); 
+        if(i !== -1) { 
+            deals[i] = {...deals[i], ...updated, id: deals[i].id}; 
+            saveData(); 
+            renderAll(); 
+            updateStats(); 
+        } 
+    }
+    
+    function deleteDeal(id) { 
+        deals = deals.filter(d => d.id != id); 
+        saveData(); 
+        renderAll(); 
+        updateStats(); 
+    }
+    
+    function clearAllDeals() {
+        if(confirm('⚠️ Вы уверены, что хотите удалить ВСЕ сделки? Это действие необратимо!')) {
+            deals = [];
+            saveData();
+            renderAll();
+            updateStats();
+            alert('✅ Все сделки удалены');
+        }
+    }
 
     function updateStats() {
         const buys = deals.filter(d => d.type === 'buy');
@@ -1241,11 +1282,17 @@
         for(const sell of sells) {
             let sellAmount = sell.usdtAmount;
             const sellPrice = sell.pricePerUsdt || sell.amountPaid / sell.usdtAmount;
-            while(sellAmount > 0 && buyIdx < buys.length) {
-                if(buyRemaining === 0) { buyIdx++; if(buyIdx >= buys.length) break; buyRemaining = buys[buyIdx].usdtAmount; buyPrice = buys[buyIdx].pricePerUsdt || buys[buyIdx].amountPaid / buys[buyIdx].usdtAmount; }
+            while(sellAmount > 0.001 && buyIdx < buys.length) {
+                if(buyRemaining <= 0.001) { 
+                    buyIdx++; 
+                    if(buyIdx >= buys.length) break; 
+                    buyRemaining = buys[buyIdx].usdtAmount; 
+                    buyPrice = buys[buyIdx].pricePerUsdt || buys[buyIdx].amountPaid / buys[buyIdx].usdtAmount; 
+                }
                 const used = Math.min(sellAmount, buyRemaining);
                 profit += (sellPrice - buyPrice) * used;
-                sellAmount -= used; buyRemaining -= used;
+                sellAmount -= used; 
+                buyRemaining -= used;
             }
         }
         return profit;
@@ -1265,21 +1312,34 @@
         document.getElementById('totalBuyRub').innerHTML = totalBuyRub.toFixed(2) + ' ₽';
         document.getElementById('totalSellRub').innerHTML = totalSellRub.toFixed(2) + ' ₽';
         document.getElementById('totalProfitRub').innerHTML = profit.toFixed(2) + ' ₽';
-        document.getElementById('totalProfitRub').style.color = profit >= 0 ? '#10b981' : '#ef4444';
     }
 
     function isValidDate(str) { return /^(\d{2})\.(\d{2})\.(\d{2})$/.test(str); }
     function formatDate(ts) { return new Date(ts).toLocaleDateString('ru-RU', { day:'numeric', month:'short' }); }
 
     function calculateSimpleMargin(deal) {
-        if (deal.type === 'buy') return null;
+        if (deal.type !== 'sell') return null;
         const buys = deals.filter(d => d.type === 'buy').sort((a,b) => b.date - a.date);
         if (buys.length === 0) return null;
-        const lastBuy = buys[0];
-        const lastBuyPrice = lastBuy.pricePerUsdt || (lastBuy.amountPaid / lastBuy.usdtAmount);
+        
+        // Находим наиболее подходящую покупку (FIFO для этого конкретного остатка)
+        let remainingAmount = deal.usdtAmount;
+        let totalCost = 0;
+        let tempBuys = [...deals.filter(d => d.type === 'buy').sort((a,b) => a.date - b.date)];
+        
+        for(let buy of tempBuys) {
+            if(remainingAmount <= 0) break;
+            const used = Math.min(remainingAmount, buy.usdtAmount);
+            const buyPrice = buy.pricePerUsdt || (buy.amountPaid / buy.usdtAmount);
+            totalCost += buyPrice * used;
+            remainingAmount -= used;
+        }
+        
+        if(remainingAmount > 0.001) return null;
+        
+        const avgBuyPrice = totalCost / deal.usdtAmount;
         const sellPrice = deal.pricePerUsdt || (deal.amountPaid / deal.usdtAmount);
-        const marginRub = (sellPrice - lastBuyPrice) * deal.usdtAmount;
-        return marginRub;
+        return (sellPrice - avgBuyPrice) * deal.usdtAmount;
     }
 
     function renderDealCard(deal, showMeta = true) {
@@ -1293,16 +1353,18 @@
         extraInfoHtml += `<div class="info-row"><span class="info-label">💵 Цена за 1 USDT:</span><span class="info-value">${price} ₽</span></div>`;
         if (!isBuy && margin !== null) {
             extraInfoHtml += `<div class="info-row"><span class="info-label">💰 Маржа:</span><span class="info-value ${marginClass}">${marginFormatted}</span></div>`;
+        } else if (!isBuy && margin === null && deals.filter(d => d.type === 'buy').length > 0) {
+            extraInfoHtml += `<div class="info-row"><span class="info-label">💰 Маржа:</span><span class="info-value">⚠️ Недостаточно USDT в портфеле</span></div>`;
         } else if (!isBuy && margin === null) {
             extraInfoHtml += `<div class="info-row"><span class="info-label">💰 Маржа:</span><span class="info-value">— (нет покупок)</span></div>`;
         }
-        if (deal.counterparty) {
+        if (deal.counterparty && deal.counterparty.trim()) {
             extraInfoHtml += `<div class="info-row"><span class="info-label">💳 Метод оплаты:</span><span class="info-value">${deal.counterparty}</span></div>`;
         }
-        if (deal.dealNumber) {
+        if (deal.dealNumber && deal.dealNumber.trim()) {
             extraInfoHtml += `<div class="info-row"><span class="info-label">🔢 Номер сделки:</span><span class="info-value">${deal.dealNumber}</span></div>`;
         }
-        if (deal.comment) {
+        if (deal.comment && deal.comment.trim()) {
             extraInfoHtml += `<div class="info-row"><span class="info-label">📎 Ссылка на чек:</span><a href="${deal.comment}" target="_blank" class="info-value">${deal.comment.length > 50 ? deal.comment.substring(0,47)+'...' : deal.comment}</a></div>`;
         }
         
@@ -1344,19 +1406,19 @@
     }
 
     function attachEvents() {
-        document.querySelectorAll('#recentDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить?')) deleteDeal(parseInt(btn.dataset.id)); });
-        document.querySelectorAll('#recentDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(parseInt(btn.dataset.id)));
+        document.querySelectorAll('#recentDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить сделку?')) deleteDeal(btn.dataset.id); });
+        document.querySelectorAll('#recentDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(btn.dataset.id));
     }
 
     function attachHistoryEvents() {
-        document.querySelectorAll('#historyDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить?')) deleteDeal(parseInt(btn.dataset.id)); });
-        document.querySelectorAll('#historyDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(parseInt(btn.dataset.id)));
+        document.querySelectorAll('#historyDealsList .action-btn.delete').forEach(btn => btn.onclick = () => { if(confirm('Удалить сделку?')) deleteDeal(btn.dataset.id); });
+        document.querySelectorAll('#historyDealsList .action-btn.edit').forEach(btn => btn.onclick = () => openEditModal(btn.dataset.id));
     }
 
     function renderAll() { calcAnalytics(); renderRecent(); }
 
     function openEditModal(id) {
-        const deal = deals.find(d => d.id === id);
+        const deal = deals.find(d => d.id == id);
         if(!deal) return;
         
         const modalHtml = `
@@ -1522,109 +1584,128 @@
         XLSX.writeFile(wb, `p2p_deals_${date}.xlsx`);
     }
 
-    // ===== ИМПОРТ ИЗ TELEGRAM WALLET =====
-function importFromTelegramWallet(replaceMode) {
-    const fileInput = document.getElementById('telegramImportFile');
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert('Выберите Excel-файл из Telegram Wallet');
-        return;
-    }
-    
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
-        
-        if (!rows || rows.length < 2) {
-            alert('Файл пуст или не содержит данных');
+    // ===== ИМПОРТ ИЗ TELEGRAM WALLET (ИСПРАВЛЕННЫЙ) =====
+    function importFromTelegramWallet(replaceMode) {
+        const fileInput = document.getElementById('telegramImportFile');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Выберите Excel-файл из Telegram Wallet');
             return;
         }
         
-        const headers = rows[0].map(cell => String(cell || '').toLowerCase().trim());
-        const colIndex = {
-            adType: headers.findIndex(h => h.includes('ad type')),
-            role: headers.findIndex(h => h.includes('role')),
-            orderNumber: headers.findIndex(h => h.includes('order number')),
-            netCrypto: headers.findIndex(h => h.includes('net crypto amount')),
-            fiatAmount: headers.findIndex(h => h.includes('fiat amount')),
-            paymentMethod: headers.findIndex(h => h.includes('payment method')),
-            completionTime: headers.findIndex(h => h.includes('completion time'))
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+            
+            if (!rows || rows.length < 2) {
+                alert('Файл пуст или не содержит данных');
+                return;
+            }
+            
+            const headers = rows[0].map(cell => String(cell || '').toLowerCase().trim());
+            
+            // Поиск индексов колонок
+            const colIndex = {
+                adType: headers.findIndex(h => h.includes('ad type') || h.includes('тип объявления')),
+                role: headers.findIndex(h => h.includes('role') || h.includes('роль')),
+                orderNumber: headers.findIndex(h => h.includes('order number') || h.includes('номер заказа')),
+                netCrypto: headers.findIndex(h => h.includes('net crypto') || h.includes('криптовалюта нетто')),
+                fiatAmount: headers.findIndex(h => h.includes('fiat amount') || h.includes('фиатная сумма')),
+                paymentMethod: headers.findIndex(h => h.includes('payment method') || h.includes('способ оплаты')),
+                completionTime: headers.findIndex(h => h.includes('completion time') || h.includes('время завершения'))
+            };
+            
+            function parseDateFromText(dateStr) {
+                if (!dateStr) return '';
+                // Пробуем парсить ISO формат
+                const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                if (isoMatch) return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1].slice(-2)}`;
+                // Пробуем парсить DD.MM.YY
+                const dotMatch = dateStr.match(/^(\d{2})\.(\d{2})\.(\d{2})/);
+                if (dotMatch) return `${dotMatch[1]}.${dotMatch[2]}.${dotMatch[3]}`;
+                return '';
+            }
+            
+            const newDeals = [];
+            let importErrors = 0;
+            
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                
+                let adType = colIndex.adType >= 0 ? String(row[colIndex.adType] || '').toUpperCase() : '';
+                let role = colIndex.role >= 0 ? String(row[colIndex.role] || '').toUpperCase() : '';
+                
+                // Определение типа сделки
+                let type = null;
+                if (adType === 'SALE' && role === 'SELLER') type = 'sell';
+                else if (adType === 'PURCHASE' && role === 'BUYER') type = 'buy';
+                else if (adType === 'SALE' && role === 'BUYER') type = 'buy';
+                else if (adType === 'PURCHASE' && role === 'SELLER') type = 'sell';
+                else if (adType === 'BUY' && role === 'BUYER') type = 'buy';
+                else if (adType === 'SELL' && role === 'SELLER') type = 'sell';
+                
+                if (!type) {
+                    importErrors++;
+                    continue;
+                }
+                
+                let usdtAmount = colIndex.netCrypto >= 0 ? parseFloat(row[colIndex.netCrypto]) : 0;
+                let amountPaid = colIndex.fiatAmount >= 0 ? parseFloat(row[colIndex.fiatAmount]) : 0;
+                let counterparty = colIndex.paymentMethod >= 0 ? String(row[colIndex.paymentMethod] || '') : '';
+                counterparty = counterparty.replace(/ \(ex\..*?\)/g, '').replace(/ \(ex\./g, '').replace(/\)/g, '').trim();
+                let dealNumber = colIndex.orderNumber >= 0 ? String(row[colIndex.orderNumber] || '') : '';
+                let pricePerUsdt = usdtAmount > 0 ? amountPaid / usdtAmount : 0;
+                let completionRaw = colIndex.completionTime >= 0 ? String(row[colIndex.completionTime] || '') : '';
+                let customDate = parseDateFromText(completionRaw);
+                
+                if (isNaN(usdtAmount) || isNaN(amountPaid) || usdtAmount <= 0 || amountPaid <= 0) {
+                    importErrors++;
+                    continue;
+                }
+                
+                newDeals.push({
+                    type: type,
+                    amountPaid: amountPaid,
+                    usdtAmount: usdtAmount,
+                    pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)),
+                    counterparty: counterparty,
+                    dealNumber: dealNumber,
+                    comment: '',
+                    customDate: customDate || ''
+                });
+            }
+            
+            if (newDeals.length === 0) {
+                alert(`Не удалось распознать сделки. Ошибок: ${importErrors}. Проверьте формат файла.`);
+                return;
+            }
+            
+            if (replaceMode) {
+                if (confirm(`⚠️ Замена удалит все текущие сделки (${deals.length} шт.) и добавит ${newDeals.length} новых. Продолжить?`)) {
+                    while(deals.length) {
+                        deleteDeal(deals[0].id);
+                    }
+                } else {
+                    return;
+                }
+            }
+            
+            for (const deal of newDeals) {
+                addDeal(deal);
+            }
+            
+            alert(`✅ Импортировано ${newDeals.length} сделок! Пропущено: ${importErrors}`);
+            fileInput.value = '';
         };
         
-        function parseDateFromISO(iso) {
-            if (!iso) return '';
-            const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
-            if (match) return `${match[3]}.${match[2]}.${match[1].slice(-2)}`;
-            return '';
-        }
-        
-        const newDeals = [];
-        
-        for (let i = 1; i < rows.length; i++) {
-            const row = rows[i];
-            if (!row || row.length === 0) continue;
-            
-            let adType = colIndex.adType >= 0 ? String(row[colIndex.adType] || '').toUpperCase() : '';
-            let role = colIndex.role >= 0 ? String(row[colIndex.role] || '').toUpperCase() : '';
-            
-            let type = null;
-            if (adType === 'SALE' && role === 'SELLER') type = 'sell';
-            else if (adType === 'PURCHASE' && role === 'BUYER') type = 'buy';
-            else if (adType === 'SALE' && role === 'BUYER') type = 'buy';
-            else if (adType === 'PURCHASE' && role === 'SELLER') type = 'sell';
-            
-            if (!type) continue;
-            
-            let usdtAmount = colIndex.netCrypto >= 0 ? parseFloat(row[colIndex.netCrypto]) : 0;
-            let amountPaid = colIndex.fiatAmount >= 0 ? parseFloat(row[colIndex.fiatAmount]) : 0;
-            let counterparty = colIndex.paymentMethod >= 0 ? String(row[colIndex.paymentMethod] || '') : '';
-            counterparty = counterparty.replace(' (ex. Tinkoff)', '').replace(' (ex. ', '').replace(')', '');
-            let dealNumber = colIndex.orderNumber >= 0 ? String(row[colIndex.orderNumber] || '') : '';
-            let pricePerUsdt = usdtAmount > 0 ? amountPaid / usdtAmount : 0;
-            let completionRaw = colIndex.completionTime >= 0 ? String(row[colIndex.completionTime] || '') : '';
-            let customDate = parseDateFromISO(completionRaw);
-            
-            if (isNaN(usdtAmount) || isNaN(amountPaid) || usdtAmount <= 0 || amountPaid <= 0) continue;
-            
-            newDeals.push({
-                type: type,
-                amountPaid: amountPaid,
-                usdtAmount: usdtAmount,
-                pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)),
-                counterparty: counterparty,
-                dealNumber: dealNumber,
-                comment: '',
-                customDate: customDate
-            });
-        }
-        
-        if (newDeals.length === 0) {
-            alert('Не удалось распознать сделки. Проверьте формат файла.');
-            return;
-        }
-        
-        if (replaceMode) {
-            // Очищаем через deleteDeal, чтобы корректно обновить UI
-            while(deals.length) {
-                deleteDeal(deals[0].id);
-            }
-        }
-        
-        // Добавляем через addDeal — теперь импортированные сделки будут редактироваться!
-        for (const deal of newDeals) {
-            addDeal(deal);
-        }
-        
-        alert(`✅ Импортировано ${newDeals.length} сделок!`);
-        fileInput.value = '';
-    };
+        reader.readAsArrayBuffer(file);
+    }
     
-    reader.readAsArrayBuffer(file);
-}
     // ===== ОБРАБОТЧИКИ =====
     document.getElementById('dealForm').onsubmit = (e) => {
         e.preventDefault();
@@ -1641,19 +1722,17 @@ function importFromTelegramWallet(replaceMode) {
         else price = amountPaid / usdtAmount;
         addDeal({ type, amountPaid, usdtAmount, pricePerUsdt: parseFloat(price.toFixed(2)), counterparty, dealNumber, comment, customDate: date });
         document.getElementById('dealForm').reset();
+        alert('✅ Сделка добавлена!');
     };
 
-    document.getElementById('calcBtn').onclick = () => { const r=parseFloat(document.getElementById('calcRub').value), rate=parseFloat(document.getElementById('calcRate').value); if(isNaN(r)||isNaN(rate)) return; document.getElementById('calcResult').innerHTML = `💵 ${(r/rate).toFixed(2)} USDT`; };
-    document.getElementById('quickCalcBtn').onclick = () => { const r=parseFloat(document.getElementById('quickRub').value), u=parseFloat(document.getElementById('quickUsdt').value); if(isNaN(r)||isNaN(u)||u===0) return; document.getElementById('quickResult').innerHTML = `💰 ${(r/u).toFixed(2)} ₽`; };
+    document.getElementById('calcBtn').onclick = () => { const r=parseFloat(document.getElementById('calcRub').value), rate=parseFloat(document.getElementById('calcRate').value); if(isNaN(r)||isNaN(rate)) { alert('Заполните оба поля'); return; } document.getElementById('calcResult').innerHTML = `💵 ${(r/rate).toFixed(2)} USDT`; };
+    document.getElementById('quickCalcBtn').onclick = () => { const r=parseFloat(document.getElementById('quickRub').value), u=parseFloat(document.getElementById('quickUsdt').value); if(isNaN(r)||isNaN(u)||u===0) { alert('Заполните оба поля'); return; } document.getElementById('quickResult').innerHTML = `💰 Цена за 1 USDT: ${(r/u).toFixed(2)} ₽`; };
     document.getElementById('supportBtn').onclick = () => window.open('https://t.me/KyratovVD', '_blank');
     document.getElementById('exportPdfBtn').onclick = exportToPDF;
     document.getElementById('exportExcelBtn').onclick = exportToExcel;
-    document.getElementById('importReplaceBtn').onclick = () => {
-        if (confirm('⚠️ ВНИМАНИЕ! Замена удалит все текущие сделки. Продолжить?')) {
-            importFromTelegramWallet(true);
-        }
-    };
+    document.getElementById('importReplaceBtn').onclick = () => importFromTelegramWallet(true);
     document.getElementById('importAddBtn').onclick = () => importFromTelegramWallet(false);
+    document.getElementById('clearAllDataBtn').onclick = clearAllDeals;
 
     const historyModal = document.getElementById('historyModal');
     document.getElementById('showAllHistoryBtn').onclick = () => { renderHistory(); historyModal.style.display = 'flex'; };
