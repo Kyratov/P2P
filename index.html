@@ -661,7 +661,6 @@
             color: #fbbf24;
         }
 
-        /* РАСШИРЕННЫЙ ПРЕМИУМ ГИД (вместо приветственного окна) */
         .onboarding-overlay {
             position: fixed;
             top: 0;
@@ -913,11 +912,41 @@
         body.dark .modal-content {
             background: #1e293b;
         }
+        
+        .flex-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .flex-buttons .btn {
+            flex: 1;
+        }
+        .btn-excel {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .file-input {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 24px;
+            font-size: 14px;
+            width: 100%;
+            background: white;
+        }
+        body.dark .file-input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-<!-- РАСШИРЕННЫЙ ПРЕМИУМ ГИД (8 шагов) - открывается при первом запуске вместо приветственного окна -->
 <div id="onboardingOverlay" class="onboarding-overlay hide">
     <div class="onboarding-card">
         <div class="onboarding-icon" id="onbIcon">📊</div>
@@ -1033,13 +1062,24 @@
             </div>
             <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Напишите нам, если нашли баг или есть идеи!</p>
             <button id="supportBtn" class="btn">📩 Открыть чат</button>
-            <p style="margin-top: 16px; font-size: 11px; opacity: 0.7; text-align: center;">tg: @KyratovVD</p>
         </div>
         
         <div class="card">
-            <h2>📎 Экспорт в PDF</h2>
-            <p style="margin-bottom: 16px; font-size: 13px; color: #64748b;">Скачайте отчёт по всем сделкам</p>
-            <button id="exportPdfBtn" class="btn">📄 Скачать PDF</button>
+            <h2>📎 Экспорт данных</h2>
+            <div class="flex-buttons">
+                <button id="exportPdfBtn" class="btn">📄 PDF</button>
+                <button id="exportExcelBtn" class="btn btn-excel">📊 Excel</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📥 Импорт из Telegram Wallet</h2>
+            <p style="margin-bottom: 12px; font-size: 13px; color: #64748b;">Загрузите файл экспорта из Telegram Wallet (.xlsx)</p>
+            <input type="file" id="telegramImportFile" class="file-input" accept=".xlsx, .xls">
+            <div class="flex-buttons">
+                <button id="importReplaceBtn" class="btn btn-danger">📥 Заменить всё</button>
+                <button id="importAddBtn" class="btn btn-excel">📥 Добавить</button>
+            </div>
         </div>
         
         <div class="card">
@@ -1057,18 +1097,15 @@
     <button class="tab-btn" data-tab="support"><svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><circle cx="5" cy="12" r="2.5"/></svg><span>Прочее</span></button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
-    // ===== РАСШИРЕННЫЙ ПРЕМИУМ ГИД (8 подробных шагов) =====
+    // ===== ОНБОРДИНГ =====
     const onbSteps = [
-        { icon: '📊', title: 'Добро пожаловать!', desc: 'P2P Tracker Pro — ваш личный помощник для учёта сделок. Автоматический расчёт прибыли, курсы валют и аналитика в одном месте.' },
-        { icon: '🏠', title: 'Главный экран', desc: 'Здесь вы видите общую прибыль, текущие курсы USD/EUR/CNY, а также статистику по всем сделкам: сколько куплено, продано и остаток USDT.' },
-        { icon: '➕', title: 'Создание сделки', desc: 'Нажмите на вкладку "Создать". Укажите тип операции (покупка/продажа), сумму в рублях, количество USDT и цену. Цена рассчитается автоматически, если вы оставите поле пустым.' },
-        { icon: '💰', title: 'Расчёт маржи', desc: 'Маржа считается просто: (Цена продажи − Цена последней покупки) × Количество USDT. Зелёный цвет — прибыль, красный — убыток.' },
-        { icon: '📋', title: 'История сделок', desc: 'Все ваши сделки сохраняются. Вы можете искать по методу оплаты, номеру сделки или комментарию. Также доступны фильтры по типу: только покупки или только продажи.' },
-        { icon: '🔍', title: 'Поиск и фильтрация', desc: 'Используйте строку поиска для быстрого нахождения нужной сделки. Кнопки фильтрации помогут отсортировать историю по типу операции.' },
-        { icon: '🧮', title: 'Калькулятор', desc: 'Два полезных инструмента: конвертер RUB → USDT по вашему курсу и калькулятор для определения цены сделки (сумма / количество USDT).' },
-        { icon: '📎', title: 'Экспорт и поддержка', desc: 'В разделе "Прочее" вы можете скачать полный отчёт по сделкам в PDF. Если нашли баг или есть идеи — напишите в техподдержку. Мы на связи!' }
+        { icon: '📊', title: 'Добро пожаловать!', desc: 'P2P Tracker Pro — ваш личный помощник для учёта сделок.' },
+        { icon: '🏠', title: 'Главный экран', desc: 'Прибыль, курсы валют, статистика и график.' },
+        { icon: '➕', title: 'Создание сделки', desc: 'Добавляйте покупки и продажи USDT.' },
+        { icon: '💰', title: 'Расчёт маржи', desc: 'Автоматический расчёт прибыли по каждой сделке.' },
+        { icon: '📋', title: 'История', desc: 'Все сделки с поиском и фильтрами.' },
+        { icon: '📎', title: 'Экспорт и импорт', desc: 'Экспорт PDF/Excel, импорт из Telegram Wallet.' }
     ];
     let onbStep = 0;
     
@@ -1113,7 +1150,6 @@
         localStorage.setItem('onboarding_done', 'true');
     };
     
-    // Показываем гид при первом запуске (вместо приветственного окна)
     if (!localStorage.getItem('onboarding_done')) {
         setTimeout(() => { showPremiumGuide(); }, 300);
     }
@@ -1385,6 +1421,7 @@
         };
     }
 
+    // ===== ЭКСПОРТ В PDF =====
     function exportToPDF() {
         if(deals.length === 0) {
             alert('Нет сделок для экспорта');
@@ -1416,12 +1453,12 @@
                 </div>
                 <table>
                     <thead>
-                        <tr><th>Дата</th><th>Тип</th><th>Сумма (RUB)</th><th>USDT</th><th>Цена</th><th>Метод оплаты</th><th>Номер сделки</th><tr>
+                        <tr><th>Дата</th><th>Тип</th><th>Сумма (RUB)</th><th>USDT</th><th>Цена</th><th>Метод оплаты</th><th>Номер сделки</th></tr>
                     </thead>
                     <tbody>
         `;
         
-        deals.forEach(d => {
+        for (const d of deals) {
             const price = d.pricePerUsdt ? d.pricePerUsdt.toFixed(2) : (d.amountPaid/d.usdtAmount).toFixed(2);
             htmlContent += `<tr>
                 <td>${d.customDate || new Date(d.date).toLocaleDateString()}</td>
@@ -1432,7 +1469,7 @@
                 <td>${d.counterparty || '-'}</td>
                 <td>${d.dealNumber || '-'}</td>
             </tr>`;
-        });
+        }
         
         const buys = deals.filter(d => d.type === 'buy');
         const sells = deals.filter(d => d.type === 'sell');
@@ -1457,6 +1494,141 @@
         html2pdf().set(opt).from(element).save();
     }
 
+    // ===== ЭКСПОРТ В EXCEL =====
+    function exportToExcel() {
+        if (deals.length === 0) {
+            alert('Нет сделок для экспорта');
+            return;
+        }
+        
+        const data = [];
+        for (const d of deals) {
+            const price = d.pricePerUsdt ? d.pricePerUsdt.toFixed(2) : (d.amountPaid/d.usdtAmount).toFixed(2);
+            data.push({
+                'Дата': d.customDate || new Date(d.date).toLocaleDateString('ru-RU'),
+                'Тип': d.type === 'buy' ? 'Покупка' : 'Продажа',
+                'Сумма (RUB)': d.amountPaid,
+                'USDT': d.usdtAmount,
+                'Цена за 1 USDT': parseFloat(price),
+                'Метод оплаты': d.counterparty || '',
+                'Номер сделки': d.dealNumber || '',
+                'Ссылка на чек': d.comment || ''
+            });
+        }
+        
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Сделки');
+        
+        const date = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `p2p_deals_${date}.xlsx`);
+    }
+
+    // ===== ИМПОРТ ИЗ TELEGRAM WALLET =====
+    function importFromTelegramWallet(replaceMode) {
+        const fileInput = document.getElementById('telegramImportFile');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Выберите Excel-файл из Telegram Wallet');
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+            
+            if (!rows || rows.length < 2) {
+                alert('Файл пуст или не содержит данных');
+                return;
+            }
+            
+            const headers = rows[0].map(cell => String(cell || '').toLowerCase().trim());
+            const colIndex = {
+                adType: headers.findIndex(h => h.includes('ad type')),
+                role: headers.findIndex(h => h.includes('role')),
+                orderNumber: headers.findIndex(h => h.includes('order number')),
+                netCrypto: headers.findIndex(h => h.includes('net crypto amount')),
+                fiatAmount: headers.findIndex(h => h.includes('fiat amount')),
+                paymentMethod: headers.findIndex(h => h.includes('payment method')),
+                completionTime: headers.findIndex(h => h.includes('completion time'))
+            };
+            
+            function parseDateFromISO(iso) {
+                if (!iso) return '';
+                const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                if (match) return `${match[3]}.${match[2]}.${match[1].slice(-2)}`;
+                return '';
+            }
+            
+            const newDeals = [];
+            
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                
+                let adType = colIndex.adType >= 0 ? String(row[colIndex.adType] || '').toUpperCase() : '';
+                let role = colIndex.role >= 0 ? String(row[colIndex.role] || '').toUpperCase() : '';
+                
+                let type = null;
+                if (adType === 'SALE' && role === 'SELLER') type = 'sell';
+                else if (adType === 'PURCHASE' && role === 'BUYER') type = 'buy';
+                else if (adType === 'SALE' && role === 'BUYER') type = 'buy';
+                else if (adType === 'PURCHASE' && role === 'SELLER') type = 'sell';
+                
+                if (!type) continue;
+                
+                let usdtAmount = colIndex.netCrypto >= 0 ? parseFloat(row[colIndex.netCrypto]) : 0;
+                let amountPaid = colIndex.fiatAmount >= 0 ? parseFloat(row[colIndex.fiatAmount]) : 0;
+                let counterparty = colIndex.paymentMethod >= 0 ? String(row[colIndex.paymentMethod] || '') : '';
+                counterparty = counterparty.replace(' (ex. Tinkoff)', '').replace(' (ex. ', '').replace(')', '');
+                let dealNumber = colIndex.orderNumber >= 0 ? String(row[colIndex.orderNumber] || '') : '';
+                let pricePerUsdt = usdtAmount > 0 ? amountPaid / usdtAmount : 0;
+                let completionRaw = colIndex.completionTime >= 0 ? String(row[colIndex.completionTime] || '') : '';
+                let customDate = parseDateFromISO(completionRaw);
+                
+                if (isNaN(usdtAmount) || isNaN(amountPaid) || usdtAmount <= 0 || amountPaid <= 0) continue;
+                
+                newDeals.push({
+                    type: type,
+                    amountPaid: amountPaid,
+                    usdtAmount: usdtAmount,
+                    pricePerUsdt: parseFloat(pricePerUsdt.toFixed(2)),
+                    counterparty: counterparty,
+                    dealNumber: dealNumber,
+                    comment: '',
+                    customDate: customDate,
+                    id: Date.now() + Math.random() + i,
+                    date: Date.now()
+                });
+            }
+            
+            if (newDeals.length === 0) {
+                alert('Не удалось распознать сделки. Проверьте формат файла.');
+                return;
+            }
+            
+            if (replaceMode) {
+                deals = [];
+            }
+            
+            for (const deal of newDeals) {
+                deals.unshift(deal);
+            }
+            
+            saveData();
+            renderAll();
+            alert(`✅ Импортировано ${newDeals.length} сделок!`);
+            fileInput.value = '';
+        };
+        
+        reader.readAsArrayBuffer(file);
+    }
+
+    // ===== ОБРАБОТЧИКИ =====
     document.getElementById('dealForm').onsubmit = (e) => {
         e.preventDefault();
         const type = document.getElementById('dealType').value;
@@ -1477,7 +1649,14 @@
     document.getElementById('calcBtn').onclick = () => { const r=parseFloat(document.getElementById('calcRub').value), rate=parseFloat(document.getElementById('calcRate').value); if(isNaN(r)||isNaN(rate)) return; document.getElementById('calcResult').innerHTML = `💵 ${(r/rate).toFixed(2)} USDT`; };
     document.getElementById('quickCalcBtn').onclick = () => { const r=parseFloat(document.getElementById('quickRub').value), u=parseFloat(document.getElementById('quickUsdt').value); if(isNaN(r)||isNaN(u)||u===0) return; document.getElementById('quickResult').innerHTML = `💰 ${(r/u).toFixed(2)} ₽`; };
     document.getElementById('supportBtn').onclick = () => window.open('https://t.me/KyratovVD', '_blank');
-    document.getElementById('exportPdfBtn').onclick = () => exportToPDF();
+    document.getElementById('exportPdfBtn').onclick = exportToPDF;
+    document.getElementById('exportExcelBtn').onclick = exportToExcel;
+    document.getElementById('importReplaceBtn').onclick = () => {
+        if (confirm('⚠️ ВНИМАНИЕ! Замена удалит все текущие сделки. Продолжить?')) {
+            importFromTelegramWallet(true);
+        }
+    };
+    document.getElementById('importAddBtn').onclick = () => importFromTelegramWallet(false);
 
     const historyModal = document.getElementById('historyModal');
     document.getElementById('showAllHistoryBtn').onclick = () => { renderHistory(); historyModal.style.display = 'flex'; };
